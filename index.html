@@ -1,139 +1,1904 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b111b">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101117">
 <title>GuitarLab Pro</title>
 <style>
-:root{--bg:#0b111b;--panel:#111c2a;--panel2:#192638;--line:#2b3b50;--text:#f1f5fb;--muted:#9aaac0;--lime:#b9f653;--red:#ff8080}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}button,input,select{font:inherit}button,select{cursor:pointer}button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px 12px}button:hover{border-color:var(--lime)}button.active,button.primary{background:var(--lime);border-color:var(--lime);color:#10180a;font-weight:750}button:disabled{opacity:.4}select,input[type=text]{background:#0b1420;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px;max-width:100%}input[type=range]{width:100%;accent-color:var(--lime)}label{display:grid;gap:5px;color:var(--muted);font-size:12px}h1,h2,h3,p{margin:0}h1{font-size:23px}h2{font-size:17px;margin-bottom:5px}h3{font-size:13px;margin-bottom:8px}p{color:var(--muted)}hr{border:0;border-top:1px solid var(--line);margin:12px 0}.small{font-size:11px;color:var(--muted)}.lime{color:var(--lime)}.app{min-height:100vh;display:grid;grid-template-columns:205px minmax(0,1fr)}aside{background:#0d1520;border-right:1px solid var(--line);padding:19px 12px;display:flex;flex-direction:column;gap:18px}.brand{padding:4px 8px}.mark{display:grid;place-items:center;background:var(--lime);color:#10180a;border-radius:12px;width:39px;height:39px;font-size:22px;margin-bottom:9px}.tag{font-size:10px;letter-spacing:1px;color:var(--muted)}nav{display:grid;gap:5px}nav button{background:transparent;border-color:transparent;text-align:left;padding:10px}nav button.active{background:#253723;color:var(--lime);border-color:#465d38}.streak{margin-top:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px}.main{min-width:0}.topbar{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px}.topbar input{width:min(420px,55%)}main{padding:16px;max-width:1600px;margin:auto}.welcome{display:flex;justify-content:space-between;gap:12px;padding:18px 20px;margin-bottom:13px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(110deg,#182638,#111722)}.welcome p{font-size:12px}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}.card{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;overflow:hidden}.s3{grid-column:span 3}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s12{grid-column:1/-1}.head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:12px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.spread{justify-content:space-between}.stack{display:grid;gap:10px}.metric{font-size:32px;font-weight:850;letter-spacing:-1px}.pill{border:1px solid var(--line);border-radius:99px;padding:3px 8px;color:var(--muted);font-size:11px}.meter{height:9px;background:#29374a;border-radius:99px;overflow:hidden}.meter>div{height:100%;width:0;background:var(--lime);transition:width .12s}.status{font-size:12px;color:var(--lime);min-height:18px}.error{color:var(--red)}.page{display:none}.page.active{display:block}.hidden{display:none!important}.subnav{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.big-note{font-size:40px;line-height:1.15;font-weight:850}.refgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.ref{background:#0b1420;border:1px solid var(--line);border-radius:10px;padding:12px}.target{border-color:#64843c}.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gauge{width:210px;max-width:100%;height:108px;margin:8px auto 0;position:relative;overflow:hidden}.gauge:before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:190px;height:190px;border:11px solid #2a3a4f;border-bottom-color:transparent;border-radius:50%}.gauge:after{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%) rotate(-20deg);width:190px;height:190px;border:11px solid var(--lime);border-bottom-color:transparent;border-right-color:transparent;border-radius:50%}.glabel{position:absolute;inset:33px 0 auto;text-align:center}.roots{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:12px}.roots button{padding:9px 0}.chord-layout{display:grid;grid-template-columns:155px minmax(0,1fr);gap:13px}.families{display:grid;gap:3px;align-content:start;max-height:700px;overflow:auto}.families button{background:transparent;border-color:transparent;text-align:left;padding:7px 9px;font-size:12px}.families button.active{background:#293e26;color:var(--lime)}.diagramBox{background:#0b1420;border:1px solid var(--line);border-radius:10px;padding:12px}.diagram{display:block;width:100%;max-width:260px;margin:auto}.voicings{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:7px}.voicing{padding:9px;border:1px solid var(--line);border-radius:9px;background:#0c1521;text-align:center}.voicing.selected{border-color:var(--lime)}.boardWrap{overflow:auto}.board{display:grid;grid-template-columns:28px repeat(13,minmax(24px,1fr));gap:2px;min-width:420px}.board>div{height:27px;display:grid;place-items:center;font-size:10px}.board .head,.board .string{color:var(--muted)}.board .cell{background:#263548;position:relative;cursor:pointer;border-radius:3px}.board .cell:after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#6a7b92}.board .cell span{z-index:1}.board .root{background:var(--lime);color:#10180a;font-weight:800}.board .tone{background:#425d7d}.beats{display:flex;justify-content:center;gap:6px;margin:13px}.beat{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#29394e;font-size:11px}.beat.on{background:var(--lime);color:#111}.historyitem{padding:8px 0;border-bottom:1px solid var(--line)}.mobile{display:none}
-@media(max-width:1100px){.app{grid-template-columns:170px minmax(0,1fr)}.s3{grid-column:span 6}.s5,.s7{grid-column:1/-1}}
-@media(max-width:700px){.app{display:block}body> .app>aside{display:none}.mobile{display:flex;overflow:auto;gap:5px;padding:8px 10px;border-bottom:1px solid var(--line)}.mobile button{white-space:nowrap;font-size:11px;padding:7px 9px}.topbar{height:53px;padding:0 12px}main{padding:10px}.welcome{padding:14px}.grid{gap:9px}.s3,.s5,.s6,.s7,.s12{grid-column:1/-1}.card{padding:12px}.chord-layout{grid-template-columns:105px minmax(0,1fr)}.controls{grid-template-columns:1fr 1fr}.big-note{font-size:31px}}
+:root {
+  --bg:#101117; --panel:#191b24; --panel2:#20232e;
+  --text:#f2f3f8; --muted:#9b9fb0; --line:#303341;
+  --accent:#a78bfa; --accent2:#7c5ce7; --green:#67e8b1;
+  --red:#ff758f; --yellow:#ffd479; --radius:18px;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.5;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:2px solid var(--accent); outline-offset:2px;
+}
+button:disabled { opacity:.4; cursor:not-allowed; }
+.app { max-width:1200px; margin:auto; padding:20px; }
+header {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap; padding:10px 0 24px;
+}
+.brand { display:flex; align-items:center; gap:12px; }
+.logo {
+  width:44px; height:44px; border-radius:14px; display:grid;
+  place-items:center; background:linear-gradient(135deg,#a78bfa,#6d4bd1);
+  color:white; font-size:23px; font-weight:800;
+}
+h1,h2,h3,p { margin-top:0; }
+h1 { font-size:clamp(22px,4vw,30px); margin:0; letter-spacing:-.8px; }
+h2 { font-size:22px; margin-bottom:8px; }
+h3 { font-size:16px; margin-bottom:10px; }
+.subtitle,.muted { color:var(--muted); }
+.subtitle { font-size:13px; margin:2px 0 0; }
+.header-status {
+  color:var(--green); font-size:12px; padding:7px 11px;
+  border:1px solid #315746; background:#183126; border-radius:30px;
+}
+nav {
+  display:flex; gap:8px; flex-wrap:wrap; padding:6px;
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:16px; margin-bottom:22px;
+}
+.nav-btn {
+  border:0; color:var(--muted); background:transparent;
+  padding:10px 14px; border-radius:11px; font-size:13px; font-weight:650;
+}
+.nav-btn.active { background:var(--accent2); color:white; }
+.page { display:none; }
+.page.active { display:block; }
+.panel {
+  min-width:0; background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--radius); padding:20px; margin-bottom:16px;
+}
+.panel-head {
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; flex-wrap:wrap; margin-bottom:16px;
+}
+.panel-head h2,.panel-head h3 { margin:0; }
+.grid { display:grid; gap:16px; }
+.grid.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.grid.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.grid.four { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.metric {
+  background:var(--panel2); border:1px solid var(--line);
+  padding:16px; border-radius:15px;
+}
+.metric-label { color:var(--muted); font-size:12px; }
+.metric-value { font-size:25px; font-weight:750; margin-top:5px; }
+.metric-note { color:var(--muted); font-size:11px; margin-top:3px; }
+.btn {
+  border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  padding:10px 14px; border-radius:11px; font-size:13px; font-weight:650;
+}
+.btn.primary { background:var(--accent2); border-color:var(--accent2); color:white; }
+.btn.good { color:var(--green); border-color:#315746; }
+.btn.danger { color:var(--red); border-color:#673544; }
+.btn.small { padding:7px 10px; font-size:12px; }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.field { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.field label { color:var(--muted); font-size:12px; }
+input,select,textarea {
+  width:100%; min-width:0; border:1px solid var(--line);
+  background:#11131a; color:var(--text); border-radius:10px; padding:10px 11px;
+}
+input[type="range"] { padding:0; accent-color:var(--accent); }
+textarea { resize:vertical; min-height:84px; }
+.section-label {
+  color:var(--muted); text-transform:uppercase; letter-spacing:1.2px;
+  font-size:10px; font-weight:800; margin-bottom:10px;
+}
+.pill-row { display:flex; flex-wrap:wrap; gap:7px; }
+.pill {
+  border:1px solid var(--line); background:var(--panel2); color:var(--muted);
+  padding:8px 12px; border-radius:30px; font-size:12px; font-weight:650;
+}
+.pill.active { color:white; border-color:var(--accent); background:#3a2e5a; }
+.note { color:var(--muted); font-size:12px; }
+.divider { height:1px; background:var(--line); margin:16px 0; }
+.big-note {
+  font-size:clamp(42px,9vw,72px); font-weight:800; letter-spacing:-2px;
+  line-height:1.1;
+}
+.center { text-align:center; }
+.hidden { display:none !important; }
+.status { font-size:13px; color:var(--muted); min-height:20px; }
+.status.good { color:var(--green); }
+.status.bad { color:var(--red); }
+.status.warn { color:var(--yellow); }
+canvas { display:block; max-width:100%; }
+.chord-fretboard {
+  display:block; width:100%; max-width:440px; height:auto; margin:auto;
+}
+.fretboard-wrap {
+  padding:12px; background:#11131a; border:1px solid var(--line);
+  border-radius:14px;
+}
+.string-audit { display:grid; gap:7px; }
+.audit-row {
+  display:grid; grid-template-columns:48px 1fr 1fr; gap:8px;
+  padding:8px 10px; border-radius:9px; background:var(--panel2);
+  font-size:12px; align-items:center;
+}
+.audit-row .audit-ok { color:var(--green); }
+.audit-row .audit-muted { color:var(--muted); }
+.chord-title-row {
+  display:flex; justify-content:center; align-items:center;
+  gap:12px; margin:8px 0 18px;
+}
+.chord-title-row h2 { margin:0; min-width:80px; text-align:center; }
+.arrow-btn {
+  width:38px; height:38px; border-radius:50%; border:1px solid var(--line);
+  background:var(--panel2); color:var(--text); font-size:21px;
+}
+.dial-wrap { max-width:430px; margin:0 auto; }
+.dial-wrap svg { width:100%; height:auto; overflow:visible; }
+.dial-label { fill:var(--muted); font-size:12px; }
+.dial-target { fill:var(--green); font-weight:800; font-size:15px; }
+.dial-needle { stroke:var(--accent); stroke-width:4; stroke-linecap:round; }
+.dial-hub { fill:var(--accent); }
+.progress-track {
+  width:100%; height:8px; background:#303341; border-radius:20px; overflow:hidden;
+}
+.progress-fill {
+  height:100%; width:0%; background:linear-gradient(90deg,var(--accent2),var(--green));
+  transition:width .12s linear;
+}
+.timer-display {
+  font-size:clamp(44px,10vw,68px); font-weight:800;
+  font-variant-numeric:tabular-nums; letter-spacing:-2px;
+}
+.metronome-dot {
+  width:13px; height:13px; border-radius:50%; background:#444653;
+  display:inline-block; margin:0 4px;
+}
+.metronome-dot.active { background:var(--green); box-shadow:0 0 14px #67e8b188; }
+.history-list { display:grid; gap:8px; }
+.history-item {
+  padding:12px; background:var(--panel2); border:1px solid var(--line);
+  border-radius:12px; display:flex; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; font-size:12px;
+}
+.quiz-choice { min-width:60px; }
+.note-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; }
+.note-btn {
+  border:1px solid var(--line); background:var(--panel2); color:var(--text);
+  border-radius:11px; padding:12px 4px; font-weight:750;
+}
+.note-btn.active { border-color:var(--accent); background:#3a2e5a; }
+.note-btn.playing { border-color:var(--green); }
+footer { text-align:center; padding:22px 0 12px; color:var(--muted); font-size:11px; }
+@media(max-width:760px) {
+  .app { padding:12px; }
+  .grid.two,.grid.three,.grid.four { grid-template-columns:1fr; }
+  .metric-value { font-size:22px; }
+  .panel { padding:15px; }
+  nav { gap:4px; }
+  .nav-btn { flex:1 1 auto; padding:9px 10px; }
+  .note-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
 </style>
 </head>
 <body>
 <div class="app">
-<aside>
- <div class="brand"><div class="mark">♫</div><h1>GuitarLab <span class="lime">Pro</span></h1><div class="tag">PRACTICE · LEARN · IMPROVE</div></div>
- <nav><button class="active" data-page="dashboard">⌂ &nbsp; Dashboard</button><button data-page="chords">▦ &nbsp; Chord Library</button><button data-page="tuner">♩ &nbsp; Tuner</button><button data-page="bend">〰 &nbsp; Bend Trainer</button><button data-page="practice">◷ &nbsp; Practice & Tempo</button><button data-page="theory">♫ &nbsp; Music Theory & Ear Training</button></nav>
- <div class="streak">🔥 Practice consistency<br><strong id="streak" class="lime">Start today</strong><p class="small">Small steps make big players.</p></div>
-</aside>
-<div class="main">
- <div class="topbar"><strong class="lime">G U I T A R L A B</strong><input id="search" type="text" placeholder="Search chords, e.g. G, Am"><button id="audioTest">♫</button></div>
- <div class="mobile" id="mobile"></div>
- <main>
- <section id="dashboard" class="page active">
-  <div class="welcome"><div><h1>Your practice, at a glance.</h1><p>Track consistency, build skills, and keep moving forward.</p></div><span class="pill">PRACTICE OVER TIME</span></div>  <div class="grid">
-   <div class="card s3"><h2>Total practice</h2><div class="metric" id="totalMinutes">0 min</div><p class="small">Across saved sessions</p></div>
-   <div class="card s3"><h2>Sessions logged</h2><div class="metric" id="sessionCount">0</div></div>
-   <div class="card s3"><h2>Exercises done</h2><div class="metric" id="exerciseCount">0</div></div>
-   <div class="card s3"><h2>Practice days</h2><div class="metric" id="dayCount">0</div></div>
-   <div class="card s7"><div class="head"><h2>Recent practice</h2><button data-go="practice">Log a session ↗</button></div><div id="dashHistory"></div></div>
-   <div class="card s5"><h2>Quick access</h2><div class="stack" style="margin-top:10px"><button data-go="chords">♬ Open Chord Library</button><button data-go="tuner">♩ Open Tuner</button><button data-go="bend">〰 Open Bend Trainer</button><button data-go="practice">◷ Metronome & Timer</button><button data-go="theory">♫ Theory & Ear Training</button></div></div>
+<header>
+  <div class="brand">
+    <div class="logo">G</div>
+    <div>
+      <h1>GuitarLab Pro</h1>
+      <p class="subtitle">Practice smarter. Hear better. Play with intention.</p>
+    </div>
   </div>
- </section>
- <section id="chords" class="page"><div class="card">
-  <div class="head"><div><h1>♬ Chord Library</h1><p>Browse shapes, hear chords, inspect notes.</p></div><span class="pill">GUITAR</span></div>
-  <div class="roots" id="roots"></div>
-  <div class="chord-layout"><aside style="display:block;background:transparent;border:0;padding:0;min-width:0"><h3>Chord Families</h3><div id="families" class="families"></div></aside><div>
-   <div class="head"><div><h1 id="chordTitle">G Major</h1><p id="formula">Formula: 1 · 3 · 5</p></div><div class="row"><button id="playChord" class="primary">🔊 Play</button><button id="arpChord">▷ Arpeggiate</button></div></div>
-   <div class="diagramBox"><div class="grid" style="grid-template-columns:repeat(12,minmax(0,1fr));align-items:center"><div class="s5"><div id="diagram"></div><div class="row spread"><span class="small">Low E → high e</span><span id="shapeBadge" class="pill">Pitch-checked</span></div></div><div class="s7"><div class="card"><h3>Notes in this chord</h3><div id="chordNotes" class="metric lime" style="font-size:24px">G · B · D</div><p id="shapeDescription" class="small"></p><hr><h3>String-by-string check</h3><div id="stringAudit" class="small"></div></div></div></div></div>
-   <h3 style="margin-top:14px">Verified voicings</h3><div id="voicings" class="voicings"></div>
-   <div class="row" style="margin-top:12px"><label>Bass / inversion<select id="bass"><option value="root">Root position</option></select></label><label>Chord family<select id="familySelect"></select></label></div>
-   <p class="small" style="margin-top:9px">Only curated shapes that pass the pitch check are shown as verified. Unsupported shapes are marked instead of guessed.</p><div id="chordStatus" class="status"></div>
-  </div></div>
- </div></section>
- <section id="tuner" class="page"><div class="grid"><div class="card s6"><h1>♩ Chromatic Tuner</h1><p>Play one string at a time.</p><div class="gauge"><div class="glabel"><div id="tunerNote" class="big-note">—</div><div id="tunerHz" class="small">Waiting for microphone</div></div></div><div id="tunerCents" class="metric" style="text-align:center">— cents</div><div class="meter"><div id="tunerMeter"></div></div><p id="tunerLevel" class="small" style="text-align:center;margin-top:8px">Input level: —</p><p id="tunerAdvice" style="text-align:center;margin:8px 0">Start the microphone to begin.</p><div class="row"><button id="tunerStart" class="primary">Start microphone</button><button id="tunerStop">Stop</button></div><div id="tunerStatus" class="status" aria-live="polite"></div></div><div class="card s6"><h2>Standard tuning references</h2><p>Low to high: E2 · A2 · D3 · G3 · B3 · E4</p><div id="tuningRefs" class="stack" style="margin-top:15px"></div><p class="small" style="margin-top:12px">Microphone access requires HTTPS or localhost and browser permission.</p></div></div></section>
- <section id="bend" class="page"><div class="grid"><div class="card s6"><h1>〰 Bend Trainer</h1><p>Hear both notes before attempting the bend.</p><div class="controls" style="margin-top:15px"><label>String<select id="bendString"><option value="40">6th · Low E</option><option value="45">5th · A</option><option value="50">4th · D</option><option value="55">3rd · G</option><option value="59" selected>2nd · B</option><option value="64">1st · High E</option></select></label><label>Fret<select id="bendFret"></select></label><label>Target interval<select id="bendInterval"><option value="1">Half step</option><option value="2" selected>Whole step</option><option value="3">1½ steps</option></select></label></div><div class="refgrid" style="margin-top:14px"><div class="ref"><div class="small">ORIGINAL NOTE</div><div id="originalNote" class="big-note">B3</div><div id="originalFreq" class="small">246.9 Hz</div><button id="playOriginal" style="margin-top:10px;width:100%">▶ Hear original</button></div><div class="ref target"><div class="small lime">TARGET NOTE</div><div id="targetNote" class="big-note lime">C#4</div><div id="targetFreq" class="small">277.2 Hz</div><button id="playTarget" style="margin-top:10px;width:100%">♫ Hear target</button></div></div><div class="ref" style="margin-top:14px"><div class="row spread"><span class="small">YOUR NOTE</span><strong id="bendDetected">Waiting for sound</strong></div><div class="row spread" style="margin-top:6px"><span class="small">DISTANCE FROM TARGET</span><strong id="bendCents">— cents</strong></div><div class="meter" style="margin-top:8px"><div id="bendMeter"></div></div><p id="bendDirection" style="margin-top:8px">Play a note to see whether you are sharp or flat.</p><p id="bendLevel" class="small" style="margin-top:5px">Input level: —</p></div><div class="row" style="margin-top:14px"><button id="bendStart" class="primary">Start microphone</button><button id="bendStop">Stop</button><button id="bendNew">New challenge</button></div><div id="bendStatus" class="status"></div></div><div class="card s6"><h2>How to practise</h2><div class="stack"><div class="ref"><strong>1. Listen</strong><p>Play the original note, then the target.</p></div><div class="ref"><strong>2. Bend slowly</strong><p>Watch live pitch feedback as the note rises.</p></div><div class="ref"><strong>3. Hold steady</strong><p>Try to stay within ±15 cents for half a second.</p></div></div></div></div></section>
- <section id="practice" class="page"><div class="grid"><div class="card s6"><h1>◷ Practice & Tempo</h1><p>Metronome and session timer together.</p><div id="bpmBig" class="metric" style="text-align:center;margin-top:10px">100 BPM</div><input id="bpm" type="range" min="30" max="240" value="100"><div class="row spread"><span class="small">30</span><span class="small">240 BPM</span></div><div id="beats" class="beats"></div><div class="controls"><label>Time signature<select id="timeSig"><option value="4">4/4</option><option value="3">3/4</option><option value="2">2/4</option><option value="5">5/4</option><option value="6">6/4</option><option value="7">7/4</option></select></label><label>Subdivision<select id="subdivision"><option value="1">Quarter</option><option value="2">Eighth</option><option value="3">Triplets</option><option value="4">Sixteenth</option></select></label><label>Sound<select id="metroSound"><option value="click">Click</option><option value="wood">Woodblock</option><option value="beep">Beep</option><option value="rim">Rim</option></select></label></div><label style="margin-top:10px">Accent first beat<select id="accent"><option value="yes">On</option><option value="no">Off</option></select></label><div class="row" style="margin-top:12px"><button id="metroStart" class="primary">▶ Start metronome</button><button id="metroStop">Stop</button><button id="tap">Tap tempo</button></div><div id="metroStatus" class="status"></div></div><div class="card s6"><h2>Practice timer</h2><div id="timerDisplay" class="metric">00:00</div><div class="row"><button id="timerStart" class="primary">▶ Start</button><button id="timerPause">Pause</button><button id="timerReset">Reset</button></div><hr><label>Session notes<input id="sessionNotes" type="text" placeholder="e.g. G major chord changes"></label><h3 style="margin-top:14px">Exercises completed</h3><div id="checks" class="stack"><label><span><input type="checkbox" value="Chords"> Chord practice</span></label><label><span><input type="checkbox" value="Bends"> Bend accuracy</span></label><label><span><input type="checkbox" value="Rhythm"> Rhythm practice</span></label><label><span><input type="checkbox" value="Theory"> Theory / ear training</span></label></div><div class="row" style="margin-top:12px"><button id="saveSession" class="primary">Save session</button><button id="exportHistory">Export history</button></div><div id="practiceHistory"></div></div></div></section>
- <section id="theory" class="page"><div class="card"><h1>♫ Music Theory & Ear Training</h1><p>Explore notes and scales, then test your ear.</p><div class="subnav"><button class="active" data-mode="explore">Explore</button><button data-mode="ear">Ear training</button></div><div id="explore"><div class="row"><label>Root note<select id="scaleRoot"></select></label><label>Scale / chord<select id="scaleType"><option value="major">Major scale</option><option value="minor">Natural minor</option><option value="majorPent">Major pentatonic</option><option value="minorPent">Minor pentatonic</option><option value="majorTriad">Major triad</option><option value="minorTriad">Minor triad</option><option value="major7">Major 7</option><option value="minor7">Minor 7</option></select></label><label>Display<select id="boardMode"><option value="notes">Note names</option><option value="intervals">Intervals</option><option value="tones">Scale tones</option></select></label></div><div class="boardWrap" style="margin-top:15px"><div id="theoryBoard" class="board"></div></div><p id="scaleNotes" style="margin-top:10px"></p></div><div id="ear" class="hidden"><div class="ref" style="max-width:520px"><h2>Identify the note</h2><p>Play a note, then choose the note name you heard.</p><div id="earPrompt" class="big-note lime">?</div><div class="row"><button id="earPlay" class="primary">▶ Play note</button><button id="earNew">New note</button></div><div id="earChoices" class="row" style="margin-top:12px"></div><div id="earStatus" class="status"></div></div></div></div></section>
- </main></div></div>
-<script>
-'use strict';
-const $=id=>document.getElementById(id),N=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],SM=[40,45,50,55,59,64],pc=n=>(n%12+12)%12,freq=m=>440*Math.pow(2,(m-69)/12),nn=m=>N[pc(Math.round(m))]+(Math.floor(Math.round(m)/12)-1);
-function stat(id,s,err=false){let e=$(id);if(e){e.textContent=s;e.classList.toggle('error',err)}}function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-let ctx=null;function audio(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx}
-function pluck(m,d=1,v=.6,t){let c=audio(),f=freq(m),at=t??c.currentTime,n=Math.max(32,Math.round(c.sampleRate/f)),b=c.createBuffer(1,Math.floor(c.sampleRate*d),c.sampleRate),out=b.getChannelData(0),r=new Float32Array(n);for(let i=0;i<n;i++)r[i]=Math.random()*2-1;let j=0;for(let i=0;i<out.length;i++){out[i]=r[j];r[j]=(r[j]+r[(j+1)%n])*.497;j=(j+1)%n}let s=c.createBufferSource(),filt=c.createBiquadFilter(),g=c.createGain();s.buffer=b;filt.type='lowpass';filt.frequency.value=Math.min(6500,f*13);g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(v,at+.008);g.gain.exponentialRampToValueAtTime(.0001,at+d);s.connect(filt);filt.connect(g);g.connect(c.destination);s.start(at);s.stop(at+d+.02)}
-function beep(f,d=.08,v=.2,type='sine',t){const c=audio(),at=t??c.currentTime,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f,at);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(v,at+.008);g.gain.exponentialRampToValueAtTime(.0001,at+d);o.connect(g);g.connect(c.destination);o.start(at);o.stop(at+d+.02)}
-$('audioTest').onclick=()=>beep(880,.12,.22);
+  <div class="header-status">● Practice workspace</div>
+</header>
 
-/* Navigation and microphone cleanup */
-const pages=[['dashboard','Dashboard'],['chords','Chord Library'],['tuner','Tuner'],['bend','Bend Trainer'],['practice','Practice & Tempo'],['theory','Music Theory & Ear Training']];$('mobile').innerHTML=pages.map(([id,n])=>`<button data-page="${id}">${n}</button>`).join('');
-let stream=null,source=null,analyser=null,raf=0,owner=null;
-function stopMic(){if(raf)cancelAnimationFrame(raf);raf=0;if(stream)stream.getTracks().forEach(t=>t.stop());if(source)try{source.disconnect()}catch(e){}stream=null;source=null;analyser=null;owner=null}
-function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));stopMic()}
-document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
-async function startMic(who,id){stopMic();if(!navigator.mediaDevices?.getUserMedia){stat(id,'Microphone unavailable here. Open this site over HTTPS in Safari or Chrome.',true);return false}try{await audio().resume();stat(id,'Requesting microphone permission…');stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});source=audio().createMediaStreamSource(stream);analyser=audio().createAnalyser();analyser.fftSize=4096;analyser.smoothingTimeConstant=.1;source.connect(analyser);owner=who;stat(id,'Microphone connected. Play a clear single note.');return true}catch(e){stopMic();let m=e.name==='NotAllowedError'?'Permission denied. Allow microphone access in browser/site settings.':e.name==='NotFoundError'?'No microphone was found.':e.name==='NotReadableError'?'Microphone is busy in another app.':'Could not start microphone: '+e.message;stat(id,m,true);return false}}function pitch(min=65,max=1100){
- if(!analyser)return {hz:null,rms:0};
- const raw=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(raw);
- let mean=0;for(let i=0;i<raw.length;i++)mean+=raw[i];mean/=raw.length;
- let rms=0;for(let i=0;i<raw.length;i++){raw[i]-=mean;rms+=raw[i]*raw[i]}rms=Math.sqrt(rms/raw.length);
- if(rms<0.00012)return {hz:null,rms};
- const b=new Float32Array(Math.floor(raw.length/2));for(let i=0;i<b.length;i++)b[i]=raw[i*2];
- const sr=ctx.sampleRate/2,lo=Math.max(2,Math.floor(sr/max)),hi=Math.min(Math.floor(b.length/2),Math.ceil(sr/min));
- let best=0,bestCorr=0;
- for(let lag=lo;lag<=hi;lag++){let sum=0,a=0,z=0;const limit=Math.min(b.length-lag,1536);for(let i=0;i<limit;i+=2){const x=b[i],y=b[i+lag];sum+=x*y;a+=x*x;z+=y*y}const corr=sum/Math.sqrt(Math.max(1e-15,a*z));if(corr>bestCorr){bestCorr=corr;best=lag}}
- if(best<1||bestCorr<0.20)return {hz:null,rms};
- function corrAt(lag){let sum=0,a=0,z=0;const limit=Math.min(b.length-lag,1536);for(let i=0;i<limit;i+=2){const x=b[i],y=b[i+lag];sum+=x*y;a+=x*x;z+=y*y}return sum/Math.sqrt(Math.max(1e-15,a*z))}
- let lag=best;if(best>lo&&best<hi){const left=corrAt(best-1),mid=corrAt(best),right=corrAt(best+1),den=left-2*mid+right;if(Math.abs(den)>1e-9){const off=.5*(left-right)/den;if(Number.isFinite(off)&&Math.abs(off)<=1)lag+=off}}
- const hz=sr/lag;return hz>=min&&hz<=max?{hz,rms}:{hz:null,rms};
+<nav aria-label="Main navigation">
+  <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+  <button class="nav-btn" data-page="chords">Chord Library</button>
+  <button class="nav-btn" data-page="tuner">Tuner</button>
+  <button class="nav-btn" data-page="bends">Bend Trainer</button>
+  <button class="nav-btn" data-page="practice">Practice &amp; Tempo</button>
+  <button class="nav-btn" data-page="theory">Theory &amp; Ear</button>
+</nav>
+
+<main>
+<section class="page active" id="page-dashboard">
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Your practice dashboard</h2>
+        <p class="subtitle">A little focused practice goes a long way.</p>
+      </div>
+      <button class="btn primary" data-go="practice">Start a session →</button>
+    </div>
+    <div class="grid four">
+      <div class="metric">
+        <div class="metric-label">Sessions logged</div>
+        <div class="metric-value" id="metricSessions">0</div>
+        <div class="metric-note">Saved practice sessions</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Minutes practised</div>
+        <div class="metric-value" id="metricMinutes">0</div>
+        <div class="metric-note">Total recorded time</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Last session</div>
+        <div class="metric-value" id="metricLast">—</div>
+        <div class="metric-note" id="metricLastNote">No session yet</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Current focus</div>
+        <div class="metric-value" id="metricFocus">Chords</div>
+        <div class="metric-note">Choose one thing to improve</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid two">
+    <div class="panel">
+      <div class="panel-head"><h3>Quick tools</h3></div>
+      <div class="grid two">
+        <button class="btn" data-go="chords">🎸 Chord Library</button>
+        <button class="btn" data-go="tuner">🎯 Tune guitar</button>
+        <button class="btn" data-go="bends">〰 Bend accuracy</button>
+        <button class="btn" data-go="theory">♫ Ear training</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>Recent practice</h3></div>
+      <div id="dashboardHistory" class="history-list">
+        <p class="note">Your saved sessions will appear here.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-chords">
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Chord Library</h2>
+        <p class="subtitle">Explore chord tones, fingerings, inversions and voicings.</p>
+      </div>
+      <button class="btn" id="playChord">▶ Play chord</button>
+    </div>
+
+    <div class="section-label">Root note</div>
+    <div class="pill-row" id="rootButtons">
+      <button class="pill active" data-root="C">C</button>
+      <button class="pill" data-root="D">D</button>
+      <button class="pill" data-root="E">E</button>
+      <button class="pill" data-root="F">F</button>
+      <button class="pill" data-root="G">G</button>
+      <button class="pill" data-root="A">A</button>
+      <button class="pill" data-root="B">B</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Chord family</div>
+    <div class="pill-row" id="familyButtons">
+      <button class="pill active" data-family="maj">Major</button>
+      <button class="pill" data-family="min">Minor</button>
+      <button class="pill" data-family="7">Dominant 7</button>
+      <button class="pill" data-family="maj7">Major 7</button>
+      <button class="pill" data-family="m7">Minor 7</button>
+      <button class="pill" data-family="sus2">Sus2</button>
+      <button class="pill" data-family="sus4">Sus4</button>
+      <button class="pill" data-family="dim">Diminished</button>
+      <button class="pill" data-family="dim7">Diminished 7</button>
+      <button class="pill" data-family="hdim">Half-diminished</button>
+      <button class="pill" data-family="aug">Augmented</button>
+      <button class="pill" data-family="6">6</button>
+      <button class="pill" data-family="add9">Add9</button>
+      <button class="pill" data-family="9">9</button>
+      <button class="pill" data-family="power">Power chord</button>
+    </div>
+
+    <div class="grid two" style="margin-top:18px">
+      <div class="field">
+        <label for="chordBass">Bass note / inversion</label>
+        <select id="chordBass">
+          <option value="">Root position (default bass)</option>
+          <option value="root">Root bass</option>
+          <option value="third">Third in bass</option>
+          <option value="fifth">Fifth in bass</option>
+          <option value="seventh">Seventh in bass (if available)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Fingering navigation</label>
+        <div class="note" id="voicingCounter">Voicing 1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid two">
+    <div class="panel">
+      <div class="chord-title-row">
+        <button class="arrow-btn" id="prevVoicing" aria-label="Previous voicing">‹</button>
+        <h2 id="chordTitle">C Major</h2>
+        <button class="arrow-btn" id="nextVoicing" aria-label="Next voicing">›</button>
+      </div>
+      <p class="center note" id="voicingName">Open position</p>
+      <div class="fretboard-wrap">
+        <svg id="chordDiagram" class="chord-fretboard" viewBox="0 0 360 245" role="img" aria-label="Chord fingering diagram"></svg>
+      </div>
+      <div class="grid two" style="margin-top:14px">
+        <div class="metric">
+          <div class="metric-label">Chord notes</div>
+          <div id="chordNotes" style="font-weight:700;margin-top:6px">C · E · G</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Suggested voicing</div>
+          <div id="chordVoicingSummary" style="font-weight:700;margin-top:6px">Open shape</div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn primary" id="arpeggiateChord">▶ Arpeggiate</button>
+        <button class="btn" id="stopChordSound">■ Stop sound</button>
+      </div>
+      <p class="note" style="margin:12px 0 0">Fingerings are shown from the low E string (left) to the high E string (right). X means muted; O means open.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>String-by-string audit</h3></div>
+      <div class="string-audit" id="stringAudit"></div>
+      <div class="divider"></div>
+      <h3>How to read the shape</h3>
+      <p class="note">The diagram displays the fretted position and open or muted strings. Use the arrows beside the chord name to browse alternative fingerings for the same chord.</p>
+      <p class="note">A valid shape should contain the chord's required notes. Some voicings double notes or omit a root when the bass or musical context makes that useful.</p>
+      <div id="chordStatus" class="status" style="margin-top:12px"></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-tuner">
+  <div class="grid two">
+    <div class="panel center">
+      <div class="panel-head"><h2>Chromatic Tuner</h2></div>
+      <p class="subtitle">Use your device microphone to detect the pitch of a single string.</p>
+      <div style="padding:28px 0 18px">
+        <div class="big-note" id="tunerNote">—</div>
+        <div class="metric-note" id="tunerOctave">Play a string to begin</div>
+        <div class="timer-display" style="font-size:38px;margin-top:16px" id="tunerCents">0 cents</div>
+        <div class="note" id="tunerDirection">Waiting for signal</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="tunerMeter"></div></div>
+      <div class="btn-row" style="justify-content:center;margin-top:18px">
+        <button class="btn primary" id="startTuner">🎙 Start tuner</button>
+        <button class="btn" id="stopTuner">Stop</button>
+      </div>
+      <div class="status" id="tunerStatus" style="margin-top:12px">Allow microphone access when prompted.</div>
+    </div>
+    <div class="panel">
+      <h3>Standard tuning reference</h3>
+      <div class="history-list">
+        <div class="history-item"><span>6th string · E2</span><strong>82.41 Hz</strong></div>
+        <div class="history-item"><span>5th string · A2</span><strong>110.00 Hz</strong></div>
+        <div class="history-item"><span>4th string · D3</span><strong>146.83 Hz</strong></div>
+        <div class="history-item"><span>3rd string · G3</span><strong>196.00 Hz</strong></div>
+        <div class="history-item"><span>2nd string · B3</span><strong>246.94 Hz</strong></div>
+        <div class="history-item"><span>1st string · E4</span><strong>329.63 Hz</strong></div>
+      </div>
+      <div class="divider"></div>
+      <h3>Reading the tuner</h3>
+      <p class="note">Negative cents means the detected pitch is flat of the nearest note; positive cents means it is sharp. Aim for a stable reading close to 0.</p>
+      <p class="note">For best results, tune in a quiet room, pluck one string at a time, and let the initial attack settle. The detector uses a pitch-estimation window and smoothing to reduce flicker.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-bends">
+  <div class="grid two">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Bend Trainer</h2>
+          <p class="subtitle">Match a bent note to its target by ear and pitch.</p>
+        </div>
+      </div>
+      <div class="grid two">
+        <div class="field">
+          <label for="bendString">String</label>
+          <select id="bendString">
+            <option value="1">1 · High E</option>
+            <option value="2">2 · B</option>
+            <option value="3" selected>3 · G</option>
+            <option value="4">4 · D</option>
+            <option value="5">5 · A</option>
+            <option value="6">6 · Low E</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="bendFret">Starting fret</label>
+          <select id="bendFret"></select>
+        </div>
+        <div class="field">
+          <label for="bendInterval">Bend interval</label>
+          <select id="bendInterval">
+            <option value="1">Half step</option>
+            <option value="2" selected>Whole step</option>
+            <option value="3">Minor third</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Practice target</label>
+          <div class="metric" style="padding:10px">
+            <strong id="bendTargetName">—</strong>
+            <div class="note" id="bendStartName">Starting note: —</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button class="btn primary" id="playBendStart">▶ Play original</button>
+        <button class="btn" id="playBendTarget">▶ Play target</button>
+        <button class="btn" id="startBendMic">🎙 Listen to bend</button>
+        <button class="btn" id="stopBendMic">Stop listening</button>
+      </div>
+      <div class="status" id="bendStatus" style="margin-top:12px">Play the original note, then bend up to the target.</div>
+    </div>
+
+    <div class="panel center">
+      <h3>Pitch target dial</h3>
+      <p class="note">Start on the left. The target is at the centre. The right side shows a note above the target.</p>
+      <div class="dial-wrap">
+        <svg id="bendDial" viewBox="0 0 320 205" role="img" aria-label="Bend pitch target dial">
+          <path d="M35 145 A125 125 0 0 1 285 145" fill="none" stroke="#303341" stroke-width="16" stroke-linecap="round"/>
+          <path d="M35 145 A125 125 0 0 1 160 20" fill="none" stroke="#7c5ce7" stroke-width="3" stroke-linecap="round"/>
+          <path d="M160 20 A125 125 0 0 1 285 145" fill="none" stroke="#315746" stroke-width="3" stroke-linecap="round"/>
+          <line x1="160" y1="145" x2="160" y2="35" class="dial-needle" id="bendNeedle" transform="rotate(-90 160 145)"/>
+          <circle cx="160" cy="145" r="9" class="dial-hub"/>
+          <text x="35" y="173" text-anchor="middle" class="dial-label" id="bendDialLeft">C4</text>
+          <text x="160" y="8" text-anchor="middle" class="dial-target" id="bendDialTarget">D4</text>
+          <text x="285" y="173" text-anchor="middle" class="dial-label" id="bendDialRight">E4</text>
+          <text x="160" y="196" text-anchor="middle" class="dial-label" id="bendDialFeedback">Waiting for pitch</text>
+        </svg>
+      </div>
+      <div class="big-note" style="font-size:36px;margin:4px 0" id="bendDetected">—</div>
+      <div class="progress-track"><div class="progress-fill" id="bendMeter"></div></div>
+      <div class="status" id="bendAccuracy" style="margin-top:12px">Listen for the target note.</div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-practice">
+  <div class="grid two">
+    <div class="panel">
+      <div class="panel-head"><h2>Metronome</h2></div>
+      <div class="center">
+        <div class="timer-display" id="bpmDisplay">90</div>
+        <div class="note">beats per minute</div>
+        <div style="margin:18px 0">
+          <span class="metronome-dot" id="beat1"></span>
+          <span class="metronome-dot" id="beat2"></span>
+          <span class="metronome-dot" id="beat3"></span>
+          <span class="metronome-dot" id="beat4"></span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="bpmRange">Tempo</label>
+        <input type="range" id="bpmRange" min="30" max="240" value="90">
+      </div>
+      <div class="grid two" style="margin-top:14px">
+        <div class="field">
+          <label for="bpmInput">BPM</label>
+          <input id="bpmInput" type="number" min="30" max="240" value="90">
+        </div>
+        <div class="field">
+          <label for="timeSignature">Time signature</label>
+          <select id="timeSignature">
+            <option value="2">2/4</option>
+            <option value="3">3/4</option>
+            <option value="4" selected>4/4</option>
+            <option value="5">5/4</option>
+            <option value="6">6/8 (six pulses)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="subdivision">Subdivision</label>
+          <select id="subdivision">
+            <option value="1">Quarter notes</option>
+            <option value="2">Eighth notes</option>
+            <option value="3">Triplets</option>
+            <option value="4">Sixteenth notes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="metroSound">Sound</label>
+          <select id="metroSound">
+            <option value="wood">Woodblock</option>
+            <option value="beep">Beep</option>
+            <option value="click">Click</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn primary" id="startMetro">▶ Start</button>
+        <button class="btn" id="stopMetro">■ Stop</button>
+        <button class="btn" id="tapTempo">Tap tempo</button>
+      </div>
+      <p class="note" style="margin-top:12px">The metronome provides timing only. For pitch accuracy, use the separate Tuner or Bend Trainer.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Practice timer</h2></div>
+      <div class="center">
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <div class="note" id="timerStatus">Ready for your next session</div>
+      </div>
+      <div class="grid two" style="margin-top:18px">
+        <div class="field">
+          <label for="timerMinutes">Session goal (minutes)</label>
+          <input type="number" id="timerMinutes" min="1" max="240" value="20">
+        </div>
+        <div class="field">
+          <label for="practiceFocus">Practice focus</label>
+          <select id="practiceFocus">
+            <option>Chords</option>
+            <option>Timing</option>
+            <option>Bending</option>
+            <option>Ear training</option>
+            <option>Song practice</option>
+            <option>Technique</option>
+            <option>Improvisation</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:16px">
+        <button class="btn primary" id="startTimer">▶ Start session</button>
+        <button class="btn" id="pauseTimer">Ⅱ Pause</button>
+        <button class="btn good" id="saveSession">✓ Save session</button>
+        <button class="btn danger" id="resetTimer">Reset</button>
+      </div>
+      <div class="divider"></div>
+      <div class="field">
+        <label for="sessionNotes">Session notes</label>
+        <textarea id="sessionNotes" placeholder="What did you practise? What improved? What needs more work?"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Practice history</h3>
+      <div class="btn-row">
+        <button class="btn small" id="exportHistory">Export JSON</button>
+        <button class="btn small danger" id="clearHistory">Clear history</button>
+      </div>
+    </div>
+    <div class="history-list" id="practiceHistory">
+      <p class="note">No saved sessions yet.</p>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-theory">
+  <div class="grid two">
+    <div class="panel">
+      <div class="panel-head"><h2>Fretboard Explorer</h2></div>
+      <div class="grid two">
+        <div class="field">
+          <label for="scaleRoot">Scale root</label>
+          <select id="scaleRoot">
+            <option>C</option><option>C#</option><option>D</option><option>D#</option>
+            <option>E</option><option>F</option><option>F#</option><option>G</option>
+            <option>G#</option><option>A</option><option>A#</option><option>B</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="scaleType">Scale</label>
+          <select id="scaleType">
+            <option value="major">Major</option>
+            <option value="minor">Natural minor</option>
+            <option value="pentMajor">Major pentatonic</option>
+            <option value="pentMinor">Minor pentatonic</option>
+            <option value="blues">Blues</option>
+          </select>
+        </div>
+      </div>
+      <div class="fretboard-wrap" style="margin-top:14px">
+        <svg id="scaleDiagram" class="chord-fretboard" viewBox="0 0 360 220" role="img" aria-label="Scale notes on guitar fretboard"></svg>
+      </div>
+      <p class="note" id="scaleSummary" style="margin-top:12px">Choose a root and scale.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Note identification</h2></div>
+      <p class="note">Listen to a note, then choose its name. Use the reference panel below to review notes after a question.</p>
+      <div class="metric center" style="padding:24px">
+        <div class="metric-label">Question</div>
+        <div class="big-note" style="font-size:48px" id="quizQuestion">Ready?</div>
+        <div class="note" id="quizFeedback">Press New question to begin.</div>
+      </div>
+      <div class="note-grid" id="quizChoices" style="margin-top:14px"></div>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn primary" id="newQuiz">New question</button>
+        <button class="btn" id="replayQuiz">▶ Replay note</button>
+      </div>
+      <div class="note" style="margin-top:12px">Score: <strong id="quizScore">0 / 0</strong></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Note Reference &amp; Comparison</h2>
+        <p class="subtitle">Review all 12 notes in an octave using the same app sound as the ear-training exercises.</p>
+      </div>
+    </div>
+    <div class="grid two">
+      <div class="field">
+        <label for="referenceOctave">Reference octave</label>
+        <select id="referenceOctave">
+          <option value="3">C3–B3</option>
+          <option value="4" selected>C4–B4</option>
+          <option value="5">C5–B5</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="compareMode">Comparison playback</label>
+        <select id="compareMode">
+          <option value="sequential">Play two notes sequentially</option>
+          <option value="together">Play two notes together</option>
+        </select>
+      </div>
+    </div>
+    <div class="note-grid" id="referenceNotes" style="margin-top:14px"></div>
+    <div class="divider"></div>
+    <div class="grid two">
+      <div class="field">
+        <label for="compareNoteA">First note</label>
+        <select id="compareNoteA"></select>
+      </div>
+      <div class="field">
+        <label for="compareNoteB">Second note</label>
+        <select id="compareNoteB"></select>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn primary" id="playCompare">▶ Compare notes</button>
+      <button class="btn" id="playNoteA">Play first</button>
+      <button class="btn" id="playNoteB">Play second</button>
+    </div>
+    <div class="status" id="referenceStatus" style="margin-top:12px">Tap any note to hear it.</div>
+  </div>
+</section>
+</main>
+
+<footer>GuitarLab Pro · Your practice data is saved locally in this browser.</footer>
+</div><script>
+"use strict";
+
+/* =========================
+   SHARED UTILITIES
+========================= */
+const $ = id => document.getElementById(id);
+const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+const NATURAL_NAMES = ["C","D","E","F","G","A","B"];
+const STANDARD_TUNING = [40,45,50,55,59,64]; // Low E to high E
+const STRING_NAMES = ["Low E","A","D","G","B","High E"];
+const midiName = midi => {
+  const n = Math.round(midi);
+  return NOTE_NAMES[((n % 12) + 12) % 12] + (Math.floor(n / 12) - 1);
+};
+const midiFreq = midi => 440 * Math.pow(2,(midi-69)/12);
+const noteMidi = (name, octave) => NOTE_NAMES.indexOf(name) + (octave+1)*12;
+const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
+const sleep = ms => new Promise(resolve => setTimeout(resolve,ms));
+const centsBetween = (freq,target) => 1200 * Math.log2(freq/target);
+const fmtDate = value => {
+  try { return new Date(value).toLocaleString(); }
+  catch { return String(value); }
+};
+
+let audioContext = null;
+function getAudio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) throw new Error("Web Audio is not supported in this browser.");
+  if (!audioContext) audioContext = new AC();
+  if (audioContext.state === "suspended") audioContext.resume();
+  return audioContext;
 }
-function loop(who,fn){let last=0;const run=now=>{if(!analyser||owner!==who)return;raf=requestAnimationFrame(run);if(now-last<33)return;last=now;try{fn(pitch())}catch(e){stat(who==='tuner'?'tunerStatus':'bendStatus','Pitch detection error: '+e.message,true);stopMic()}};raf=requestAnimationFrame(run)}
 
-/* Tuner */
-$('tuningRefs').innerHTML=[['E2',40],['A2',45],['D3',50],['G3',55],['B3',59],['E4',64]].map(([n,m],i)=>`<div class="row spread"><span>${6-i}th string · ${n} · ${freq(m).toFixed(1)} Hz</span><button data-midi="${m}">Play</button></div>`).join('');$('tuningRefs').querySelectorAll('button').forEach(b=>b.onclick=()=>pluck(+b.dataset.midi));
-$('tunerStart').onclick=async()=>{if(!await startMic('tuner','tunerStatus'))return;loop('tuner',p=>{let level=Math.round(p.rms*1000)/10;$('tunerLevel').textContent='Input level: '+level+' (pluck a single string)';if(!p.hz){$('tunerAdvice').textContent=p.rms<.0025?'Listening… no clear guitar note detected yet.':'Sound detected — hold one note steadily.';return}let f=p.hz,m=Math.round(69+12*Math.log2(f/440)),c=1200*Math.log2(f/freq(m)),v=Math.round(c);$('tunerNote').textContent=nn(m);$('tunerHz').textContent=f.toFixed(1)+' Hz';$('tunerCents').textContent=(v>0?'+':'')+v+' cents';$('tunerMeter').style.width=Math.max(0,Math.min(100,50+v/2))+'%';$('tunerAdvice').textContent=Math.abs(v)<=5?'In tune!':v<0?'Flat — tune up slightly':'Sharp — tune down slightly'})};$('tunerStop').onclick=()=>{stopMic();stat('tunerStatus','Microphone stopped.');$('tunerNote').textContent='—';$('tunerHz').textContent='Waiting for microphone';$('tunerCents').textContent='— cents';$('tunerLevel').textContent='Input level: —'};/* Bend Trainer */
-for(let i=1;i<=24;i++)$('bendFret').add(new Option(i,i));let bs=59,bt=61,hold=null;
-function updateBend(){bs=+$('bendString').value+(+$('bendFret').value);bt=bs+(+$('bendInterval').value);$('originalNote').textContent=nn(bs);$('targetNote').textContent=nn(bt);$('originalFreq').textContent=freq(bs).toFixed(1)+' Hz';$('targetFreq').textContent=freq(bt).toFixed(1)+' Hz';$('bendCents').textContent='— cents';$('bendDetected').textContent='Waiting for sound';$('bendDirection').textContent='Play a note to see whether you are sharp or flat.';$('bendLevel').textContent='Input level: —';$('bendMeter').style.width='0%';hold=null}
-['bendString','bendFret','bendInterval'].forEach(id=>$(id).onchange=updateBend);$('playOriginal').onclick=()=>pluck(bs);$('playTarget').onclick=()=>pluck(bt);$('bendNew').onclick=()=>{updateBend();stat('bendStatus','New target ready. Listen to both reference notes.')};
-$('bendStart').onclick=async()=>{if(!await startMic('bend','bendStatus'))return;loop('bend',p=>{let level=Math.round(p.rms*1000)/10;$('bendLevel').textContent='Input level: '+level+' (pluck, then bend)';if(!p.hz){$('bendDetected').textContent='No clear note yet';$('bendCents').textContent='— cents';$('bendDirection').textContent=p.rms<.0025?'Listening… play one string clearly.':'Sound detected, but pitch is unclear — try one string at a time.';return}let f=p.hz,m=Math.round(69+12*Math.log2(f/440)),c=1200*Math.log2(f/freq(bt)),v=Math.round(c);$('bendDetected').textContent=nn(m)+' · '+f.toFixed(1)+' Hz';$('bendCents').textContent=(v>0?'+':'')+v+' cents';$('bendMeter').style.width=Math.max(0,Math.min(100,100-Math.abs(v)/2))+'%';if(Math.abs(c)<=15){$('bendDirection').textContent='ON TARGET ✓';if(hold===null)hold=performance.now();stat('bendStatus',performance.now()-hold>500?'Great — target held steadily.':'In tune — keep holding.')}else{hold=null;$('bendDirection').textContent=c<0?Math.abs(v)+' cents too LOW — bend higher ↑':Math.abs(v)+' cents too HIGH — ease down ↓';stat('bendStatus',c<0?'Bend higher toward the target.':'Ease down slightly toward the target.')}})};$('bendStop').onclick=()=>{stopMic();stat('bendStatus','Microphone stopped.');$('bendDetected').textContent='Microphone stopped'};updateBend();
+function playTone(freq, duration=0.65, options={}) {
+  const ctx = getAudio();
+  const now = ctx.currentTime;
+  const gain = ctx.createGain();
+  const volume = options.volume ?? 0.18;
+  const type = options.type || "guitar";
+  gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.exponentialRampToValueAtTime(volume,now+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
+  const oscillators = [];
+  const harmonics = type === "sine" ? [[1,1]] :
+    type === "beep" ? [[1,1]] :
+    [[1,1],[2,0.36],[3,0.16],[4,0.07]];
+  harmonics.forEach(([multiple,level]) => {
+    const osc = ctx.createOscillator();
+    const harmonicGain = ctx.createGain();
+    osc.type = type === "beep" ? "square" : "sine";
+    osc.frequency.setValueAtTime(freq*multiple,now);
+    harmonicGain.gain.value = level;
+    osc.connect(harmonicGain);
+    harmonicGain.connect(gain);
+    osc.start(now);
+    osc.stop(now+duration+0.03);
+    oscillators.push(osc);
+  });
+  return {gain,oscillators};
+}
 
-/* Curated guitar shapes */
-const ROOTS=['C','D','E','F','G','A','B'],RPC={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
-const TYPES=[
-{name:'Major',suffix:'',f:[0,4,7],sh:{C:[-1,3,2,0,1,0],D:[-1,-1,0,2,3,2],E:[0,2,2,1,0,0],F:[1,3,3,2,1,1],G:[3,2,0,0,0,3],A:[-1,0,2,2,2,0],B:[-1,2,4,4,4,2]}},
-{name:'Minor',suffix:'m',f:[0,3,7],sh:{D:[-1,-1,0,2,3,1],E:[0,2,2,0,0,0],A:[-1,0,2,2,1,0],C:[-1,3,5,5,4,3],B:[-1,2,4,4,3,2]}},
-{name:'Dominant 7',suffix:'7',f:[0,4,7,10],sh:{C:[-1,3,2,3,1,3],D:[-1,-1,0,2,1,2],E:[0,2,0,1,0,0],G:[3,2,0,0,0,1],A:[-1,0,2,0,2,0],B:[-1,2,1,2,0,2]}},
-{name:'Major 7',suffix:'maj7',f:[0,4,7,11],sh:{C:[-1,3,2,0,0,0],D:[-1,-1,0,2,2,2],E:[0,2,1,1,0,0],G:[3,2,0,0,0,2],A:[-1,0,2,1,2,0]}},
-{name:'Minor 7',suffix:'m7',f:[0,3,7,10],sh:{A:[-1,0,2,0,1,0],E:[0,2,0,0,0,0],D:[-1,-1,0,2,1,1],B:[-1,2,0,2,0,2]}},
-{name:'Suspended 2',suffix:'sus2',f:[0,2,7],sh:{D:[-1,-1,0,2,3,0],A:[-1,0,2,2,0,0]}},
-{name:'Suspended 4',suffix:'sus4',f:[0,5,7],sh:{D:[-1,-1,0,2,3,3],A:[-1,0,2,2,3,0]}},
-{name:'Diminished',suffix:'dim',f:[0,3,6],sh:{}},
-{name:'Diminished 7',suffix:'dim7',f:[0,3,6,9],sh:{}},
-{name:'Half diminished',suffix:'m7♭5',f:[0,3,6,10],sh:{}},
-{name:'Augmented',suffix:'aug',f:[0,4,8],sh:{}},
-{name:'Sixth',suffix:'6',f:[0,4,7,9],sh:{A:[-1,0,2,2,2,2]}},
-{name:'Add 9',suffix:'add9',f:[0,4,7,2],sh:{C:[-1,3,2,0,3,3],G:[3,2,0,2,0,3],D:[-1,-1,4,2,3,0]}},
-{name:'Dominant 9',suffix:'9',f:[0,4,7,10,2],sh:{A:[-1,0,2,4,2,3]}},
-{name:'Power chord',suffix:'5',f:[0,7],sh:{E:[0,2,2,-1,-1,-1],A:[-1,0,2,2,-1,-1]}}
-];let root='G',ti=0,bass=null,shape=null;const typ=()=>TYPES[ti],tonePCs=()=>[...new Set(typ().f.map(n=>pc(RPC[root]+n)))];
-function validate(s){const sounding=s.map((f,i)=>f<0?null:{m:SM[i]+f,p:pc(SM[i]+f)}).filter(Boolean),set=new Set(sounding.map(x=>x.p)),minimum=typ().suffix==='5'?2:3;if(sounding.length<minimum||!tonePCs().every(n=>set.has(n)))return false;const lowest=sounding.reduce((a,b)=>b.m<a.m?b:a);return bass===null||lowest.p===bass}
-function findShape(){const preset=typ().sh[root];if(preset&&validate(preset))return preset;const pcs=tonePCs(),windows=[[0,4],[2,6],[4,8],[5,9],[7,11],[9,13]];let best=null,bestScore=Infinity;for(const [lo,hi] of windows){const opts=SM.map(open=>{const arr=[-1];if(lo===0)arr.push(0);for(let f=Math.max(1,lo);f<=hi;f++)if(pcs.includes(pc(open+f)))arr.push(f);return arr});const candidate=Array(6).fill(-1);function walk(i){if(i===6){if(!validate(candidate))return;const frets=candidate.filter(f=>f>0),notes=candidate.map((f,j)=>f<0?null:SM[j]+f).filter(x=>x!==null),span=frets.length?Math.max(...frets)-Math.min(...frets):0,muted=candidate.filter(f=>f<0).length,open=candidate.filter(f=>f===0).length,duplicates=notes.length-new Set(notes.map(pc)).size,score=span*2+muted*1.8+duplicates*.6-open*.15+frets.reduce((a,f)=>a+f,0)*.035;if(score<bestScore){bestScore=score;best=candidate.slice()}return}for(const f of opts[i]){candidate[i]=f;const fs=candidate.slice(0,i+1).filter(x=>x>0);if(fs.length&&Math.max(...fs)-Math.min(...fs)>4)continue;walk(i+1)}candidate[i]=-1}walk(0)}return best}
-function drawShape(s){let fs=s.filter(x=>x>0),start=fs.length&&Math.min(...fs)>4?Math.min(...fs)-1:1,x0=28,x1=218,y0=38,y1=160,svg='<svg class="diagram" viewBox="0 0 240 190" role="img" aria-label="Chord fingering diagram"><text x="120" y="17" text-anchor="middle" fill="#f1f5fb" font-size="13">'+esc(root+typ().suffix)+'</text>';for(let i=0;i<6;i++){let x=x0+i*(x1-x0)/5;svg+=`<line x1="${x}" y1="${y0}" x2="${x}" y2="${y1}" stroke="#8192a8" stroke-width="1.3"/>`}for(let i=0;i<=4;i++){let y=y0+i*(y1-y0)/4;svg+=`<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="#8192a8" stroke-width="${i===0&&start===1?3:1.2}"/>`}if(start>1)svg+=`<text x="1" y="49" fill="#b9f653" font-size="10">${start}fr</text>`;s.forEach((f,i)=>{let x=x0+i*(x1-x0)/5;if(f<0){svg+=`<text x="${x}" y="31" fill="#ff8080" text-anchor="middle" font-size="14">×</text>`;return}if(f===0){svg+=`<circle cx="${x}" cy="27" r="5" fill="none" stroke="#b9f653" stroke-width="1.5"/>`;return}if(f<start||f>start+4)return;let y=y0+(f-start+.5)*(y1-y0)/4;svg+=`<circle cx="${x}" cy="${y}" r="8" fill="#b9f653"/><text x="${x}" y="${y+3}" text-anchor="middle" fill="#10180a" font-size="8">${f}</text>`});return svg+'</svg>'}
-function renderChord(){let t=typ();$('chordTitle').textContent=root+t.suffix;$('formula').textContent='Formula: '+t.f.map(n=>({0:'1',1:'♭2',2:'2',3:'♭3',4:'3',5:'4',6:'♭5',7:'5',8:'♯5',9:'6',10:'♭7',11:'7'})[n]||n).join(' · ');$('chordNotes').textContent=tonePCs().map(n=>N[n]).join(' · ');shape=findShape();if(shape){$('diagram').innerHTML=drawShape(shape);$('shapeBadge').textContent='Pitch-checked';$('shapeDescription').textContent='Curated shape; all chord tones checked.';$('stringAudit').innerHTML=shape.map((f,i)=>`${6-i}th (${['E','A','D','G','B','e'][i]}): ${f<0?'muted':f===0?'open → '+nn(SM[i]):'fret '+f+' → '+nn(SM[i]+f)}`).join('<br>');$('voicings').innerHTML='<div class="voicing selected"><strong>Standard shape</strong><p class="small">Verified tones</p></div>'}else{$('diagram').innerHTML='<div style="padding:35px 8px;text-align:center"><div class="big-note muted">—</div><p>No verified shape available</p><p class="small">Formula shown; fingering withheld until validated.</p></div>';$('shapeBadge').textContent='No verified shape';$('shapeDescription').textContent='Formula available; fingering not verified.';$('stringAudit').textContent='No verified shape for this root and family.';$('voicings').innerHTML='<div class="voicing"><strong>Not yet verified</strong><p class="small">No invented diagram shown.</p></div>'}$('playChord').disabled=!shape;$('arpChord').disabled=!shape;stat('chordStatus',shape?'Sounding notes checked against the chord formula.':'Chord tones listed; no verified fingering for this selection.')}
-function renderRoots(){$('roots').innerHTML=ROOTS.map(r=>`<button data-root="${r}" class="${r===root?'active':''}">${r}</button>`).join('');$('roots').querySelectorAll('button').forEach(b=>b.onclick=()=>{root=b.dataset.root;renderRoots();renderChord()})}
-function renderFamilies(){$('families').innerHTML=TYPES.map((t,i)=>`<button class="${i===ti?'active':''}" data-type="${i}">${t.name} ›</button>`).join('');$('families').querySelectorAll('button').forEach(b=>b.onclick=()=>{ti=+b.dataset.type;$('familySelect').value=ti;renderFamilies();renderChord()})}
-$('familySelect').innerHTML=TYPES.map((t,i)=>`<option value="${i}">${t.name}</option>`).join('');$('familySelect').onchange=()=>{ti=+$('familySelect').value;renderFamilies();renderChord()};$('bass').innerHTML='<option value="root">Root position</option>'+N.map((n,i)=>`<option value="${i}">Bass: ${n}</option>`).join('');$('bass').onchange=()=>{bass=$('bass').value==='root'?null:+$('bass').value;renderChord()};$('playChord').onclick=()=>{if(shape)shape.forEach((f,i)=>{if(f>=0)pluck(SM[i]+f,1,.58,ctx.currentTime+i*.045)})};$('arpChord').onclick=()=>{if(shape){let n=0;shape.forEach((f,i)=>{if(f>=0)pluck(SM[i]+f,1,.58,ctx.currentTime+n++*.23)})}};renderRoots();renderFamilies();renderChord();/* Scale / fretboard explorer and ear training */
-const SCALES={major:[0,2,4,5,7,9,11],minor:[0,2,3,5,7,8,10],majorPent:[0,2,4,7,9],minorPent:[0,3,5,7,10],majorTriad:[0,4,7],minorTriad:[0,3,7],major7:[0,4,7,11],minor7:[0,3,7,10]};$('scaleRoot').innerHTML=N.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
-function boardHTML(r=0,mode='notes',sc=SCALES.major){let h='<div class="head"></div>';for(let f=0;f<=12;f++)h+=`<div class="head">${f}</div>`;for(let s=0;s<6;s++){h+=`<div class="string">${['e','B','G','D','A','E'][s]}</div>`;for(let f=0;f<=12;f++){let m=SM[5-s]+f,int=pc(pc(m)-r),isRoot=int===0,inside=sc.includes(int),lab=mode==='intervals'?(isRoot?'R':inside?({1:'♭2',2:'2',3:'♭3',4:'3',5:'4',6:'♭5',7:'5',8:'♭6',9:'6',10:'♭7',11:'7'})[int]:''):mode==='tones'?(inside?N[pc(m)]:''):N[pc(m)];h+=`<div class="cell ${isRoot?'root':inside?'tone':''}" data-midi="${m}"><span>${lab}</span></div>`}}return h}
-function renderTheory(){let r=+$('scaleRoot').value,sc=SCALES[$('scaleType').value],mode=$('boardMode').value;$('theoryBoard').innerHTML=boardHTML(r,mode,sc);$('theoryBoard').querySelectorAll('[data-midi]').forEach(e=>e.onclick=()=>pluck(+e.dataset.midi));$('scaleNotes').textContent=N[r]+' '+$('scaleType').selectedOptions[0].text+': '+sc.map(i=>N[pc(r+i)]).join(' · ')}['scaleRoot','scaleType','boardMode'].forEach(id=>$(id).onchange=renderTheory);renderTheory();
-document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));$('explore').classList.toggle('hidden',b.dataset.mode!=='explore');$('ear').classList.toggle('hidden',b.dataset.mode!=='ear')});let ear=0;
-function newEar(){ear=Math.floor(Math.random()*12);$('earPrompt').textContent='?';$('earChoices').innerHTML=N.map(n=>`<button data-note="${n}">${n}</button>`).join('');$('earChoices').querySelectorAll('button').forEach(b=>b.onclick=()=>stat('earStatus',b.dataset.note===N[ear]?'Correct — nice listening.':'Not quite. Play the note again and retry.'))}
-function playEarNote(midi,duration=5){const c=audio();const f=freq(midi),at=c.currentTime;const fundamental=c.createOscillator(),harmonic=c.createOscillator(),g1=c.createGain(),g2=c.createGain(),mix=c.createGain();fundamental.type='sine';fundamental.frequency.setValueAtTime(f,at);harmonic.type='sine';harmonic.frequency.setValueAtTime(f*2,at);g1.gain.setValueAtTime(.0001,at);g1.gain.exponentialRampToValueAtTime(.18,at+.04);g1.gain.setValueAtTime(.18,at+duration-.12);g1.gain.exponentialRampToValueAtTime(.0001,at+duration);g2.gain.setValueAtTime(.0001,at);g2.gain.exponentialRampToValueAtTime(.035,at+.04);g2.gain.setValueAtTime(.035,at+duration-.12);g2.gain.exponentialRampToValueAtTime(.0001,at+duration);fundamental.connect(g1);harmonic.connect(g2);g1.connect(mix);g2.connect(mix);mix.connect(c.destination);fundamental.start(at);harmonic.start(at);fundamental.stop(at+duration+.02);harmonic.stop(at+duration+.02);$('earPrompt').textContent='Listen…';setTimeout(()=>$('earPrompt').textContent='?',duration*1000)}
-$('earPlay').onclick=()=>playEarNote(60+ear,5);$('earNew').onclick=newEar;newEar();
+function playGuitarNote(midi,duration=0.8,when=0) {
+  const ctx = getAudio();
+  const start = ctx.currentTime + when;
+  const fundamental = midiFreq(midi);
+  const master = ctx.createGain();
+  master.connect(ctx.destination);
+  master.gain.setValueAtTime(0.0001,start);
+  master.gain.exponentialRampToValueAtTime(0.20,start+0.012);
+  master.gain.exponentialRampToValueAtTime(0.0001,start+duration);
+  [[1,1],[2,0.38],[3,0.17],[4,0.07],[5,0.035]].forEach(([harmonic,level]) => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(fundamental*harmonic,start);
+    g.gain.value = level;
+    osc.connect(g);
+    g.connect(master);
+    osc.start(start);
+    osc.stop(start+duration+0.04);
+  });
+}
 
-/* Metronome */
-let metro=null,next=0,beat=0,subbeat=0,taps=[];function drawBeats(){$('beats').innerHTML=Array.from({length:+$('timeSig').value},(_,i)=>`<div class="beat" id="beat${i}">${i+1}</div>`).join('')}
-function clickAt(t,b,s){let first=b===0&&s===0&&$('accent').value==='yes',kind=$('metroSound').value;beep(first?1350:kind==='wood'?780:kind==='rim'?1650:900,.05,first?.22:.14,kind==='wood'?'triangle':kind==='rim'?'square':'sine',t);setTimeout(()=>{document.querySelectorAll('.beat').forEach(x=>x.classList.remove('on'));$('beat'+b)?.classList.add('on')},Math.max(0,(t-ctx.currentTime)*1000))}
-function tick(){if(!metro)return;let c=audio(),step=60/(+$('bpm').value)/(+$('subdivision').value),n=+$('timeSig').value;while(next<c.currentTime+.1){clickAt(next,beat,subbeat);subbeat++;if(subbeat>=+$('subdivision').value){subbeat=0;beat=(beat+1)%n}next+=step}}
-async function startMetro(){if(metro)return;const c=audio();try{await c.resume()}catch(e){}next=c.currentTime+.05;beat=0;subbeat=0;metro=setInterval(tick,25);stat('metroStatus','Metronome running. If you cannot hear it, check volume and tap Audio Test.')}function stopMetro(){clearInterval(metro);metro=null;document.querySelectorAll('.beat').forEach(x=>x.classList.remove('on'));stat('metroStatus','Stopped.')}
-$('bpm').oninput=()=>$('bpmBig').textContent=$('bpm').value+' BPM';$('timeSig').onchange=drawBeats;$('metroStart').onclick=startMetro;$('metroStop').onclick=stopMetro;$('tap').onclick=()=>{let now=performance.now();taps=taps.filter(t=>now-t<2200);taps.push(now);if(taps.length>1){let avg=(taps.at(-1)-taps[0])/(taps.length-1),v=Math.max(30,Math.min(240,Math.round(60000/avg)));$('bpm').value=v;$('bpmBig').textContent=v+' BPM'}};drawBeats();/* Timer, local practice history and export */
-let elapsed=0,timerStart=null,timerInterval=null;function fmt(s){s=Math.floor(s);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}function timerUpdate(){$('timerDisplay').textContent=fmt(elapsed+(timerStart?Math.floor((Date.now()-timerStart)/1000):0))}
-function history(){try{return JSON.parse(localStorage.getItem('glpHistory')||'[]')}catch(e){return []}}
-function renderHistory(){let h=history(),mins=h.reduce((a,x)=>a+x.seconds,0);$('totalMinutes').textContent=Math.round(mins/60)+' min';$('sessionCount').textContent=h.length;$('exerciseCount').textContent=h.reduce((a,x)=>a+(x.exercises||[]).length,0);$('dayCount').textContent=new Set(h.map(x=>x.day)).size;$('streak').textContent=h.length?h.length+' sessions logged':'Start today';let out=h.slice(0,6).map(x=>`<div class="historyitem"><strong>${esc(x.notes||'Practice session')}</strong><div class="small">${esc(x.date)} · ${Math.round(x.seconds/60)} min · ${(x.exercises||[]).map(esc).join(', ')||'No exercises selected'}</div></div>`).join('')||'<p class="small">No sessions logged yet. Start a timer and save your first session.</p>';$('dashHistory').innerHTML=out;$('practiceHistory').innerHTML=out}
-$('timerStart').onclick=()=>{if(timerStart)return;timerStart=Date.now();timerInterval=setInterval(timerUpdate,400)};$('timerPause').onclick=()=>{if(timerStart){elapsed+=Math.floor((Date.now()-timerStart)/1000);timerStart=null;clearInterval(timerInterval);timerInterval=null;timerUpdate()}};$('timerReset').onclick=()=>{elapsed=0;timerStart=null;clearInterval(timerInterval);timerInterval=null;timerUpdate()};
-$('saveSession').onclick=()=>{if(timerStart){elapsed+=Math.floor((Date.now()-timerStart)/1000);timerStart=null;clearInterval(timerInterval);timerInterval=null}let exercises=[...$('checks').querySelectorAll('input:checked')].map(x=>x.value),h=history();h.unshift({date:new Date().toLocaleString(),day:new Date().toISOString().slice(0,10),seconds:elapsed,notes:$('sessionNotes').value.trim(),exercises});try{localStorage.setItem('glpHistory',JSON.stringify(h));elapsed=0;timerUpdate();renderHistory();stat('metroStatus','Session saved to this browser.')}catch(e){stat('metroStatus','Could not save browser history.',true)}};
-$('exportHistory').onclick=()=>{let b=new Blob([JSON.stringify(history(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='guitarlab-history.json';a.click();URL.revokeObjectURL(u)};renderHistory();timerUpdate();
-$('search').onkeydown=e=>{if(e.key!=='Enter')return;let q=$('search').value.trim().toLowerCase(),r=ROOTS.find(r=>q.startsWith(r.toLowerCase()));if(r)root=r;let i=TYPES.findIndex(t=>(root+t.suffix).toLowerCase()===q||t.name.toLowerCase()===q);if(i>=0){ti=i;renderRoots();renderFamilies();renderChord();go('chords')}};
-document.addEventListener('visibilitychange',()=>{if(document.hidden){stopMic();stopMetro()}});
+async function playSequence(midiNotes,spacing=0.16,duration=0.6) {
+  midiNotes.forEach((midi,i)=>playGuitarNote(midi,duration,i*spacing));
+}
+
+function setStatus(id,message,kind="") {
+  const el = $(id);
+  if (!el) return;
+  el.textContent = message;
+  el.className = "status" + (kind ? " "+kind : "");
+}
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+function showPage(name) {
+  document.querySelectorAll(".page").forEach(p =>
+    p.classList.toggle("active",p.id==="page-"+name)
+  );
+  document.querySelectorAll(".nav-btn").forEach(b =>
+    b.classList.toggle("active",b.dataset.page===name)
+  );
+  if (name==="theory") renderScale();
+}
+document.querySelectorAll(".nav-btn").forEach(btn =>
+  btn.addEventListener("click",()=>showPage(btn.dataset.page))
+);
+document.querySelectorAll("[data-go]").forEach(btn =>
+  btn.addEventListener("click",()=>showPage(btn.dataset.go))
+);
+
+/* =========================
+   CHORD LIBRARY
+========================= */
+const CHORD_TYPES = {
+  maj:   {label:"Major",suffix:"",intervals:[0,4,7]},
+  min:   {label:"Minor",suffix:"m",intervals:[0,3,7]},
+  "7":   {label:"Dominant 7",suffix:"7",intervals:[0,4,7,10]},
+  maj7:  {label:"Major 7",suffix:"maj7",intervals:[0,4,7,11]},
+  m7:    {label:"Minor 7",suffix:"m7",intervals:[0,3,7,10]},
+  sus2:  {label:"Sus2",suffix:"sus2",intervals:[0,2,7]},
+  sus4:  {label:"Sus4",suffix:"sus4",intervals:[0,5,7]},
+  dim:   {label:"Diminished",suffix:"dim",intervals:[0,3,6]},
+  dim7:  {label:"Diminished 7",suffix:"dim7",intervals:[0,3,6,9]},
+  hdim:  {label:"Half-diminished",suffix:"m7♭5",intervals:[0,3,6,10]},
+  aug:   {label:"Augmented",suffix:"aug",intervals:[0,4,8]},
+  "6":   {label:"6",suffix:"6",intervals:[0,4,7,9]},
+  add9:  {label:"Add9",suffix:"add9",intervals:[0,4,7,14]},
+  "9":   {label:"9",suffix:"9",intervals:[0,4,7,10,14]},
+  power: {label:"Power chord",suffix:"5",intervals:[0,7,12]}
+};
+let chordRoot = "C";
+let chordFamily = "maj";
+let chordBassMode = "";
+let chordShapes = [];
+let chordShapeIndex = 0;
+let chordSoundToken = 0;
+
+const ROOT_PITCH = {
+  C:0,"C#":1,D:2,"D#":3,E:4,F:5,"F#":6,G:7,"G#":8,A:9,"A#":10,B:11
+};
+function chordRootMidi() { return 48 + ROOT_PITCH[chordRoot]; }
+function chordLabel() {
+  return chordRoot + CHORD_TYPES[chordFamily].suffix;
+}
+function chordPitchClasses() {
+  const root=ROOT_PITCH[chordRoot];
+  return CHORD_TYPES[chordFamily].intervals.map(i=>(root+i)%12);
+}
+function chosenBassPitch() {
+  const ints=CHORD_TYPES[chordFamily].intervals;
+  if (!chordBassMode || chordBassMode==="root") return ROOT_PITCH[chordRoot];
+  const map={third:ints[1],fifth:ints[2],seventh:ints[3]};
+  const interval=map[chordBassMode];
+  return interval===undefined ? ROOT_PITCH[chordRoot] : (ROOT_PITCH[chordRoot]+interval)%12;
+}
+
+/* Fingering array order: low E, A, D, G, B, high E.
+   -1 = muted; 0 = open; positive = fret number. */
+const CURATED_SHAPES = {
+  C: {
+    maj:[
+      {name:"Open C",frets:[-1,3,2,0,1,0]},
+      {name:"C barre (A shape)",frets:[-1,3,5,5,5,3]},
+      {name:"Compact C triad",frets:[-1,-1,10,9,8,8]}
+    ],
+    min:[
+      {name:"C minor barre (A shape)",frets:[-1,3,5,5,4,3]},
+      {name:"Compact C minor",frets:[-1,-1,10,8,8,8]}
+    ],
+    "7":[{name:"Open C7",frets:[-1,3,2,3,1,0]},{name:"C7 barre",frets:[-1,3,5,3,5,3]}],
+    maj7:[{name:"Open Cmaj7",frets:[-1,3,2,0,0,0]},{name:"Cmaj7 barre",frets:[-1,3,5,4,5,3]}],
+    m7:[{name:"Cm7 barre",frets:[-1,3,5,3,4,3]}],
+    sus2:[{name:"Csus2",frets:[-1,3,0,0,1,3]}],
+    sus4:[{name:"Csus4",frets:[-1,3,3,0,1,1]}],
+    power:[{name:"C5 power chord",frets:[-1,3,5,5,-1,-1]},{name:"C5 octave shape",frets:[8,10,10,-1,-1,-1]}]
+  },
+  F: {
+    maj:[
+      {name:"F barre (E shape)",frets:[1,3,3,2,1,1]},
+      {name:"F barre (A shape)",frets:[-1,8,10,10,10,8]},
+      {name:"Compact F triad",frets:[-1,-1,3,2,1,1]}
+    ],
+    min:[
+      {name:"Fm barre (E shape)",frets:[1,3,3,1,1,1]},
+      {name:"Fm barre (A shape)",frets:[-1,8,10,10,9,8]},
+      {name:"Compact F minor",frets:[-1,-1,3,1,1,1]}
+    ],
+    "7":[{name:"F7 barre",frets:[1,3,1,2,1,1]},{name:"F7 A-shape barre",frets:[-1,8,10,8,10,8]}],
+    maj7:[{name:"Fmaj7 compact",frets:[-1,-1,3,2,1,0]},{name:"Fmaj7 barre",frets:[1,3,2,2,1,0]}],
+    m7:[{name:"Fm7 barre",frets:[1,3,1,1,1,1]}],
+    sus2:[{name:"Fsus2",frets:[1,3,3,0,1,1]}],
+    sus4:[{name:"Fsus4 barre",frets:[1,3,3,3,1,1]}],
+    power:[{name:"F5 power chord",frets:[1,3,3,-1,-1,-1]},{name:"F5 octave shape",frets:[-1,8,10,10,-1,-1]}]
+  },
+  G: {
+    maj:[
+      {name:"Open G",frets:[3,2,0,0,0,3]},
+      {name:"G barre (E shape)",frets:[3,5,5,4,3,3]},
+      {name:"G barre (A shape)",frets:[-1,10,12,12,12,10]}
+    ],
+    min:[{name:"Gm barre (E shape)",frets:[3,5,5,3,3,3]},{name:"Gm barre (A shape)",frets:[-1,10,12,12,11,10]}],
+    "7":[{name:"Open G7",frets:[3,2,0,0,0,1]},{name:"G7 barre",frets:[3,5,3,4,3,3]}],
+    maj7:[{name:"Gmaj7",frets:[3,2,0,0,0,2]},{name:"Gmaj7 barre",frets:[3,5,4,4,3,3]}],
+    m7:[{name:"Gm7 barre",frets:[3,5,3,3,3,3]}],
+    power:[{name:"G5 power chord",frets:[3,5,5,-1,-1,-1]},{name:"G5 octave shape",frets:[-1,10,12,12,-1,-1]}]
+  },
+  D: {
+    maj:[{name:"Open D",frets:[-1,-1,0,2,3,2]},{name:"D barre (A shape)",frets:[-1,5,7,7,7,5]}],
+    min:[{name:"Open D minor",frets:[-1,-1,0,2,3,1]},{name:"Dm barre",frets:[-1,5,7,7,6,5]}],
+    "7":[{name:"Open D7",frets:[-1,-1,0,2,1,2]}],
+    maj7:[{name:"Open Dmaj7",frets:[-1,-1,0,2,2,2]}],
+    m7:[{name:"Open Dm7",frets:[-1,-1,0,2,1,1]}],
+    sus2:[{name:"Dsus2",frets:[-1,-1,0,2,3,0]}],
+    sus4:[{name:"Dsus4",frets:[-1,-1,0,2,3,3]}],
+    power:[{name:"D5 power chord",frets:[-1,5,7,7,-1,-1]},{name:"Open D5",frets:[-1,-1,0,2,3,-1]}]
+  },
+  A: {
+    maj:[{name:"Open A",frets:[-1,0,2,2,2,0]},{name:"A barre",frets:[5,7,7,6,5,5]}],
+    min:[{name:"Open Am",frets:[-1,0,2,2,1,0]},{name:"Am barre",frets:[5,7,7,5,5,5]}],
+    "7":[{name:"Open A7",frets:[-1,0,2,0,2,0]},{name:"A7 barre",frets:[5,7,5,6,5,5]}],
+    maj7:[{name:"Open Amaj7",frets:[-1,0,2,1,2,0]}],
+    m7:[{name:"Open Am7",frets:[-1,0,2,0,1,0]}],
+    sus2:[{name:"Asus2",frets:[-1,0,2,2,0,0]}],
+    sus4:[{name:"Asus4",frets:[-1,0,2,2,3,0]}],
+    power:[{name:"A5 power chord",frets:[5,7,7,-1,-1,-1]},{name:"A5 open shape",frets:[-1,0,2,2,-1,-1]}]
+  },
+  E: {
+    maj:[{name:"Open E",frets:[0,2,2,1,0,0]},{name:"E barre",frets:[0,2,2,1,0,0]}],
+    min:[{name:"Open Em",frets:[0,2,2,0,0,0]},{name:"Em barre",frets:[0,2,2,0,0,0]}],
+    "7":[{name:"Open E7",frets:[0,2,0,1,0,0]}],
+    maj7:[{name:"Open Emaj7",frets:[0,2,1,1,0,0]}],
+    m7:[{name:"Open Em7",frets:[0,2,0,0,0,0]}],
+    power:[{name:"E5 power chord",frets:[0,2,2,-1,-1,-1]},{name:"E octave shape",frets:[0,2,2,-1,-1,-1]}]
+  },
+  B: {
+    maj:[{name:"B barre (A shape)",frets:[-1,2,4,4,4,2]},{name:"B barre (E shape)",frets:[7,9,9,8,7,7]}],
+    min:[{name:"Bm barre (A shape)",frets:[-1,2,4,4,3,2]},{name:"Bm barre (E shape)",frets:[7,9,9,7,7,7]}],
+    "7":[{name:"B7 open shape",frets:[-1,2,1,2,0,2]},{name:"B7 barre",frets:[7,9,7,8,7,7]}],
+    maj7:[{name:"Bmaj7 barre",frets:[7,9,8,8,7,7]}],
+    m7:[{name:"Bm7 barre",frets:[7,9,7,7,7,7]}],
+    power:[{name:"B5 power chord",frets:[7,9,9,-1,-1,-1]},{name:"B5 A-string shape",frets:[-1,2,4,4,-1,-1]}]
+  }
+};
+
+function getNotesForShape(frets) {
+  return frets.map((f,i)=>f<0?null:STANDARD_TUNING[i]+f);
+}
+function shapeHasChordTones(frets) {
+  const pcs=chordPitchClasses();
+  const notes=getNotesForShape(frets).filter(n=>n!==null);
+  if (!notes.length) return false;
+  const present=new Set(notes.map(n=>n%12));
+  if (!pcs.every(pc=>present.has(pc))) return false;
+  const bassMode=chordBassMode;
+  if (bassMode && bassMode!=="root") {
+    const target=chosenBassPitch();
+    const bass=notes.reduce((a,b)=>Math.min(a,b),Infinity)%12;
+    if (bass!==target) return false;
+  }
+  return true;
+}
+function sameShape(a,b) { return a.every((v,i)=>v===b[i]); }
+
+function generateChordShapes() {
+  const result=[];
+  const curated=(CURATED_SHAPES[chordRoot]||{})[chordFamily]||[];
+  curated.forEach(item=>{
+    if (shapeHasChordTones(item.frets) &&
+        !result.some(s=>sameShape(s.frets,item.frets))) result.push({...item});
+  });
+
+  const root=ROOT_PITCH[chordRoot];
+  const intervals=CHORD_TYPES[chordFamily].intervals;
+  const pcs=intervals.map(n=>(root+n)%12);
+  const bassTarget=chordBassMode ? chosenBassPitch() : root;
+  const candidates=[];
+  // Search common fretboard positions, preferring compact shapes.
+  for (let start=0;start<=10;start++) {
+    const positions=[];
+    for (let s=0;s<6;s++) {
+      const options=[];
+      for (let fret=0;fret<=15;fret++) {
+        if (fret===0 && start>3) continue;
+        if (fret>0 && (fret<start || fret>start+4)) continue;
+        const midi=STANDARD_TUNING[s]+fret;
+        if (pcs.includes(midi%12)) options.push(fret);
+      }
+      positions.push(options);
+    }
+    function walk(i,arr) {
+      if (i===6) {
+        const notes=getNotesForShape(arr).filter(n=>n!==null);
+        if (!notes.length) return;
+        const present=new Set(notes.map(n=>n%12));
+        if (!pcs.every(pc=>present.has(pc))) return;
+        const bass=notes.reduce((a,b)=>Math.min(a,b),Infinity)%12;
+        if (bass!==bassTarget) return;
+        const fretted=arr.filter(f=>f>0);
+        const span=fretted.length ? Math.max(...fretted)-Math.min(...fretted) : 0;
+        if (span>4) return;
+        const muteCount=arr.filter(f=>f<0).length;
+        const openCount=arr.filter(f=>f===0).length;
+        const score=span*2+muteCount*1.8+Math.max(0,Math.min(...fretted.filter(f=>f>0)||[0])-start)*0.1-openCount*0.2;
+        candidates.push({frets:arr.slice(),score,name:start===0?"Open / low position":`Position ${start}`});
+        return;
+      }
+      walk(i+1,[...arr,-1]);
+      positions[i].forEach(f=>walk(i+1,[...arr,f]));
+    }
+    walk(0,[]);
+  }
+  candidates.sort((a,b)=>a.score-b.score);
+  for (const c of candidates) {
+    if (!result.some(s=>sameShape(s.frets,c.frets))) {
+      result.push({name:c.name,frets:c.frets});
+    }
+    if (result.length>=8) break;
+  }
+  if (!result.length) {
+    // Fallback to a safe search result if an inversion makes a rare voicing hard to find.
+    const pcsSet=new Set(pcs);
+    const frets=STANDARD_TUNING.map((midi,s)=>{
+      for(let f=0;f<=12;f++) if(pcsSet.has((midi+f)%12)) return f;
+      return -1;
+    });
+    result.push({name:"Generated voicing",frets});
+  }
+  return result;
+}
+
+function fretNoteForString(stringIndex,fret) {
+  return fret<0 ? null : STANDARD_TUNING[stringIndex]+fret;
+}
+function renderChordDiagram() {
+  const svg=$("chordDiagram");
+  const shape=chordShapes[chordShapeIndex];
+  if (!shape) return;
+  const frets=shape.frets;
+  const minF=Math.min(...frets.filter(f=>f>0),1);
+  const maxF=Math.max(...frets.filter(f=>f>0),4);
+  const firstFret=maxF<=4?1:Math.max(1,minF);
+  const left=42,right=330,top=38,bottom=204;
+  const stringGap=(right-left)/5;
+  const fretGap=(bottom-top)/4;
+  let out=`<rect x="${left}" y="${top}" width="${right-left}" height="${bottom-top}" rx="2" fill="#171923" stroke="#444653"/>`;
+  for(let f=0;f<=4;f++){
+    const y=top+f*fretGap;
+    out+=`<line x1="${left}" y1="${y}" x2="${right}" y2="${y}" stroke="${f===0&&firstFret===1?"#d6d7e1":"#555969"}" stroke-width="${f===0&&firstFret===1?4:1.5}"/>`;
+  }
+  for(let s=0;s<6;s++){
+    const x=left+s*stringGap;
+    out+=`<line x1="${x}" y1="${top}" x2="${x}" y2="${bottom}" stroke="#8b8e9d" stroke-width="${1.1+s*.12}"/>`;
+    const fret=frets[s];
+    const y=top+(fret-firstFret+0.5)*fretGap;
+    if(fret===-1) {
+      out+=`<text x="${x}" y="25" fill="#ff758f" font-size="17" text-anchor="middle">×</text>`;
+    } else if(fret===0) {
+      out+=`<circle cx="${x}" cy="20" r="6" fill="none" stroke="#67e8b1" stroke-width="2"/>`;
+    } else if(fret>=firstFret&&fret<firstFret+4) {
+      const note=fretNoteForString(s,fret);
+      const pc=note%12;
+      const isRoot=pc===ROOT_PITCH[chordRoot];
+      out+=`<circle cx="${x}" cy="${y}" r="11" fill="${isRoot?"#a78bfa":"#67e8b1"}"/>`;
+      out+=`<text x="${x}" y="${y+4}" fill="#11131a" font-size="10" font-weight="800" text-anchor="middle">${NOTE_NAMES[pc]}</text>`;
+    } else {
+      out+=`<text x="${x}" y="25" fill="#9b9fb0" font-size="11" text-anchor="middle">${fret}</text>`;
+    }
+  }
+  if(firstFret>1) out+=`<text x="12" y="${top+fretGap*.65}" fill="#9b9fb0" font-size="12">${firstFret}fr</text>`;
+  ["E","A","D","G","B","e"].forEach((n,i)=>{
+    out+=`<text x="${left+i*stringGap}" y="226" fill="#9b9fb0" font-size="11" text-anchor="middle">${n}</text>`;
+  });
+  svg.innerHTML=out;
+}
+
+function renderStringAudit() {
+  const shape=chordShapes[chordShapeIndex];
+  if(!shape) return;
+  const frets=shape.frets;
+  $("stringAudit").innerHTML=frets.map((f,i)=>{
+    const midi=fretNoteForString(i,f);
+    const note=midi===null?"Muted":midiName(midi);
+    const pc=midi===null?null:midi%12;
+    const chordTone=pc!==null&&chordPitchClasses().includes(pc);
+    const role=pc===ROOT_PITCH[chordRoot]?"Root":chordTone?"Chord tone":midi===null?"Not played":"Check";
+    return `<div class="audit-row">
+      <strong>${STRING_NAMES[i]}</strong>
+      <span>${f<0?"×":f===0?"Open":`Fret ${f}`}</span>
+      <span class="${chordTone?"audit-ok":"audit-muted"}">${note} · ${role}</span>
+    </div>`;
+  }).join("");
+}
+
+function updateChordUI() {
+  chordShapes=generateChordShapes();
+  chordShapeIndex=clamp(chordShapeIndex,0,chordShapes.length-1);
+  const shape=chordShapes[chordShapeIndex];
+  $("chordTitle").textContent=chordLabel();
+  $("voicingName").textContent=shape.name;
+  $("voicingCounter").textContent=`Voicing ${chordShapeIndex+1} of ${chordShapes.length}`;
+  $("chordNotes").textContent=chordPitchClasses().map(pc=>NOTE_NAMES[pc]).join(" · ");
+  $("chordVoicingSummary").textContent=shape.frets.map(f=>f<0?"×":f===0?"O":f).join(" – ");
+  $("prevVoicing").disabled=chordShapes.length<2;
+  $("nextVoicing").disabled=chordShapes.length<2;
+  renderChordDiagram();
+  renderStringAudit();
+  setStatus("chordStatus",`${shape.name} · ${chordShapes.length} available voicing(s)`,"good");
+}
+function selectChordRoot(root) {
+  chordRoot=root;
+  chordShapeIndex=0;
+  document.querySelectorAll("[data-root]").forEach(b=>b.classList.toggle("active",b.dataset.root===root));
+  updateChordUI();
+}
+function selectChordFamily(family) {
+  chordFamily=family;
+  chordShapeIndex=0;
+  document.querySelectorAll("[data-family]").forEach(b=>b.classList.toggle("active",b.dataset.family===family));
+  updateChordUI();
+}
+$("rootButtons").addEventListener("click",e=>{
+  const b=e.target.closest("[data-root]");
+  if(b) selectChordRoot(b.dataset.root);
+});
+$("familyButtons").addEventListener("click",e=>{
+  const b=e.target.closest("[data-family]");
+  if(b) selectChordFamily(b.dataset.family);
+});
+$("chordBass").addEventListener("change",e=>{
+  chordBassMode=e.target.value;
+  chordShapeIndex=0;
+  updateChordUI();
+});
+$("prevVoicing").addEventListener("click",()=>{
+  if(!chordShapes.length)return;
+  chordShapeIndex=(chordShapeIndex-1+chordShapes.length)%chordShapes.length;
+  updateChordUI();
+});
+$("nextVoicing").addEventListener("click",()=>{
+  if(!chordShapes.length)return;
+  chordShapeIndex=(chordShapeIndex+1)%chordShapes.length;
+  updateChordUI();
+});
+
+async function playCurrentChord(arpeggio=false) {
+  const shape=chordShapes[chordShapeIndex];
+  if(!shape)return;
+  const token=++chordSoundToken;
+  const notes=shape.frets.map((f,i)=>f<0?null:STANDARD_TUNING[i]+f).filter(n=>n!==null);
+  if(!notes.length)return;
+  const ctx=getAudio();
+  const spacing=arpeggio?0.19:0.015;
+  notes.forEach((midi,i)=>{
+    if(token!==chordSoundToken)return;
+    playGuitarNote(midi,arpeggio?0.8:1.0,i*spacing);
+  });
+}
+$("playChord").addEventListener("click",()=>playCurrentChord(false));
+$("arpeggiateChord").addEventListener("click",()=>playCurrentChord(true));
+$("stopChordSound").addEventListener("click",()=>{
+  chordSoundToken++;
+  if(audioContext) {
+    // Already scheduled notes fade naturally; this prevents new notes being queued.
+  }
+});
+updateChordUI();
+
+/* =========================
+   END OF PART 2<script>
+/* =========================
+   MICROPHONE PITCH DETECTOR
+   YIN-style difference function, interpolation,
+   signal gating, and smoothed pitch tracking.
+========================= */
+let micStream=null;
+let micSource=null;
+let analyser=null;
+let micData=null;
+let pitchRAF=null;
+let activeMicMode=null;
+let pitchTrack={smoothFreq:null,lastMidi:null,pendingMidi:null,pendingCount:0,lastTime:0};
+
+async function startPitchMicrophone(mode) {
+  stopPitchMicrophone();
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error("Microphone access requires HTTPS or localhost and a supported browser.");
+  }
+  const ctx=getAudio();
+  micStream=await navigator.mediaDevices.getUserMedia({
+    audio:{
+      echoCancellation:false,noiseSuppression:false,autoGainControl:false
+    }
+  });
+  micSource=ctx.createMediaStreamSource(micStream);
+  analyser=ctx.createAnalyser();
+  analyser.fftSize=8192;
+  analyser.smoothingTimeConstant=0;
+  micSource.connect(analyser);
+  micData=new Float32Array(analyser.fftSize);
+  activeMicMode=mode;
+  pitchTrack={smoothFreq:null,lastMidi:null,pendingMidi:null,pendingCount:0,lastTime:0};
+  pitchRAF=requestAnimationFrame(pitchLoop);
+}
+function stopPitchMicrophone() {
+  if(pitchRAF)cancelAnimationFrame(pitchRAF);
+  pitchRAF=null;
+  if(micSource) {
+    try { micSource.disconnect(); } catch {}
+  }
+  if(micStream) micStream.getTracks().forEach(t=>t.stop());
+  micStream=null; micSource=null; analyser=null; micData=null; activeMicMode=null;
+}
+function estimatePitchYIN(buffer,sampleRate) {
+  // Downsample by two to reduce work while retaining guitar fundamentals.
+  const length=Math.floor(buffer.length/2);
+  const x=new Float32Array(length);
+  let sumSq=0;
+  for(let i=0;i<length;i++){
+    const v=(buffer[i*2]+buffer[i*2+1])*0.5;
+    x[i]=v;
+    sumSq+=v*v;
+  }
+  const rms=Math.sqrt(sumSq/length);
+  if(rms<0.0035)return null;
+
+  // Remove DC bias.
+  let mean=0;
+  for(let i=0;i<length;i++)mean+=x[i];
+  mean/=length;
+  for(let i=0;i<length;i++)x[i]-=mean;
+
+  const sr=sampleRate/2;
+  const minFreq=65;
+  const maxFreq=1000;
+  const minTau=Math.max(2,Math.floor(sr/maxFreq));
+  const maxTau=Math.min(Math.floor(sr/minFreq),Math.floor(length/2));
+  const diff=new Float64Array(maxTau+1);
+  const cmnd=new Float64Array(maxTau+1);
+  let running=0;
+
+  // Difference function over a bounded sample window.
+  for(let tau=1;tau<=maxTau;tau++){
+    let d=0;
+    const end=Math.min(length-tau,2304);
+    for(let i=0;i<end;i++){
+      const delta=x[i]-x[i+tau];
+      d+=delta*delta;
+    }
+    diff[tau]=d;
+    running+=d;
+    cmnd[tau]=running>0 ? d*tau/running : 1;
+  }
+
+  let chosen=-1;
+  const threshold=0.16;
+  for(let tau=minTau;tau<maxTau;tau++){
+    if(cmnd[tau]<threshold){
+      while(tau+1<maxTau && cmnd[tau+1]<cmnd[tau])tau++;
+      chosen=tau;
+      break;
+    }
+  }
+  if(chosen<0){
+    let best=1;
+    for(let tau=minTau;tau<=maxTau;tau++){
+      if(cmnd[tau]<best){best=cmnd[tau];chosen=tau;}
+    }
+    if(chosen<0||best>0.35)return null;
+  }
+
+  // Parabolic interpolation around the selected minimum.
+  const a=cmnd[chosen-1]??cmnd[chosen];
+  const b=cmnd[chosen];
+  const c=cmnd[chosen+1]??cmnd[chosen];
+  const denom=2*(2*b-a-c);
+  const shift=Math.abs(denom)>1e-10?(c-a)/denom:0;
+  const refined=chosen+clamp(shift,-0.5,0.5);
+  const freq=sr/refined;
+  if(!Number.isFinite(freq)||freq<minFreq||freq>maxFreq)return null;
+  return {freq,rms,clarity:1-b};
+}
+
+function smoothPitch(raw) {
+  if(!raw)return null;
+  const now=performance.now();
+  const freq=raw.freq;
+  if(pitchTrack.smoothFreq===null){
+    pitchTrack.smoothFreq=freq;
+    pitchTrack.lastTime=now;
+  } else {
+    const previous=pitchTrack.smoothFreq;
+    const jumpCents=Math.abs(centsBetween(freq,previous));
+    // Follow a real bend promptly; smooth small frame-to-frame jitter.
+    const alpha=jumpCents>85?0.72:jumpCents>30?0.48:0.24;
+    pitchTrack.smoothFreq=previous+(freq-previous)*alpha;
+    pitchTrack.lastTime=now;
+  }
+  return {...raw,freq:pitchTrack.smoothFreq};
+}
+function stableMidiForFrequency(freq) {
+  const candidate=Math.round(69+12*Math.log2(freq/440));
+  if(pitchTrack.lastMidi===null){
+    pitchTrack.lastMidi=candidate;
+    pitchTrack.pendingMidi=null;
+    pitchTrack.pendingCount=0;
+    return candidate;
+  }
+  if(candidate===pitchTrack.lastMidi){
+    pitchTrack.pendingMidi=null;
+    pitchTrack.pendingCount=0;
+    return pitchTrack.lastMidi;
+  }
+  const currentCents=centsBetween(freq,midiFreq(pitchTrack.lastMidi));
+  // A new note must be supported by several frames unless the pitch has
+  // clearly moved far beyond the previous note.
+  if(Math.abs(currentCents)>72){
+    if(pitchTrack.pendingMidi===candidate)pitchTrack.pendingCount++;
+    else {pitchTrack.pendingMidi=candidate;pitchTrack.pendingCount=1;}
+    if(pitchTrack.pendingCount>=2){
+      pitchTrack.lastMidi=candidate;
+      pitchTrack.pendingMidi=null;
+      pitchTrack.pendingCount=0;
+    }
+  }
+  return pitchTrack.lastMidi;
+}
+function pitchLoop() {
+  if(!analyser||!micData||!activeMicMode)return;
+  analyser.getFloatTimeDomainData(micData);
+  const result=estimatePitchYIN(micData,getAudio().sampleRate);
+  if(result){
+    const tracked=smoothPitch(result);
+    if(activeMicMode==="tuner")updateTuner(tracked);
+    if(activeMicMode==="bend")updateBend(tracked);
+  } else {
+    if(activeMicMode==="tuner")setStatus("tunerStatus","Listening… pluck one string clearly.");
+    if(activeMicMode==="bend")setStatus("bendStatus","Listening… play the selected string and bend upward.");
+  }
+  pitchRAF=requestAnimationFrame(pitchLoop);
+}
+
+/* =========================
+   CHROMATIC TUNER
+========================= */
+let tunerLastCents=0;
+function updateTuner(pitch) {
+  const midi=stableMidiForFrequency(pitch.freq);
+  const target=midiFreq(midi);
+  const cents=centsBetween(pitch.freq,target);
+  tunerLastCents=cents;
+  $("tunerNote").textContent=NOTE_NAMES[((midi%12)+12)%12];
+  $("tunerOctave").textContent=`${midiName(midi)} · ${pitch.freq.toFixed(1)} Hz`;
+  $("tunerCents").textContent=`${cents>0?"+":""}${Math.round(cents)} cents`;
+  $("tunerMeter").style.width=`${clamp(50+cents,0,100)}%`;
+  if(Math.abs(cents)<=3){
+    $("tunerDirection").textContent="In tune";
+    setStatus("tunerStatus","In tune — keep the note steady.","good");
+  } else if(cents<0){
+    $("tunerDirection").textContent="Flat · tune up";
+    setStatus("tunerStatus","Pitch is below the target note.","warn");
+  } else {
+    $("tunerDirection").textContent="Sharp · tune down";
+    setStatus("tunerStatus","Pitch is above the target note.","warn");
+  }
+}
+$("startTuner").addEventListener("click",async()=>{
+  try{
+    await startPitchMicrophone("tuner");
+    setStatus("tunerStatus","Microphone on. Pluck one string at a time.","good");
+  }catch(e){
+    setStatus("tunerStatus",e.message||"Could not start microphone.","bad");
+  }
+});
+$("stopTuner").addEventListener("click",()=>{
+  if(activeMicMode==="tuner")stopPitchMicrophone();
+  $("tunerNote").textContent="—";
+  $("tunerOctave").textContent="Tuner stopped";
+  $("tunerCents").textContent="0 cents";
+  $("tunerMeter").style.width="50%";
+  setStatus("tunerStatus","Tuner stopped.");
+});
+
+/* =========================
+   BEND TRAINER
+========================= */
+const OPEN_STRING_MIDI={1:64,2:59,3:55,4:50,5:45,6:40};
+let bendStartMidi=55;
+let bendTargetMidi=57;
+let bendCurrentMidi=59;
+let bendFilteredCents=null;
+let bendStableFrames=0;
+
+function getBendConfiguration() {
+  const stringNo=Number($("bendString").value);
+  const fret=Number($("bendFret").value);
+  const interval=Number($("bendInterval").value);
+  bendStartMidi=OPEN_STRING_MIDI[stringNo]+fret;
+  bendTargetMidi=bendStartMidi+interval;
+  bendCurrentMidi=bendStartMidi;
+  bendFilteredCents=null;
+  bendStableFrames=0;
+  updateBendLabels();
+}
+function updateBendLabels() {
+  const interval=Number($("bendInterval").value);
+  const rightMidi=bendTargetMidi+interval;
+  $("bendStartName").textContent=`Starting note: ${midiName(bendStartMidi)}`;
+  $("bendTargetName").textContent=`${midiName(bendTargetMidi)} target`;
+  $("bendDialLeft").textContent=midiName(bendStartMidi);
+  $("bendDialTarget").textContent=midiName(bendTargetMidi);
+  $("bendDialRight").textContent=midiName(rightMidi);
+  $("bendDetected").textContent="—";
+  $("bendDialFeedback").textContent="Waiting for pitch";
+  $("bendMeter").style.width="0%";
+  $("bendNeedle").setAttribute("transform","rotate(-90 160 145)");
+  setStatus("bendAccuracy","Play the original note, then bend to the target.");
+}
+function updateBend(pitch) {
+  const cents=centsBetween(pitch.freq,midiFreq(bendTargetMidi));
+  if(bendFilteredCents===null) bendFilteredCents=cents;
+  else {
+    const jump=Math.abs(cents-bendFilteredCents);
+    const alpha=jump>90?0.7:jump>35?0.45:0.22;
+    bendFilteredCents+=alpha*(cents-bendFilteredCents);
+  }
+  const smoothedCents=bendFilteredCents;
+  const semitones=smoothedCents/100;
+  const rightLimit=Number($("bendInterval").value);
+  const range=rightLimit*2;
+  const normalized=(semitones+Number($("bendInterval").value))/range;
+  const angle=clamp(-90+normalized*180,-90,90);
+  $("bendNeedle").setAttribute("transform",`rotate(${angle} 160 145)`);
+  const midiEstimate=Math.round(69+12*Math.log2(pitch.freq/440));
+  $("bendDetected").textContent=midiName(midiEstimate);
+  $("bendDialFeedback").textContent=
+    Math.abs(smoothedCents)<=18?"On target":
+    smoothedCents<0?"Below target":"Above target";
+  $("bendMeter").style.width=`${clamp(100-Math.abs(smoothedCents)/2,0,100)}%`;
+
+  if(Math.abs(smoothedCents)<=18){
+    bendStableFrames++;
+    if(bendStableFrames>=3){
+      setStatus("bendAccuracy","Target reached — hold the pitch steady.","good");
+      setStatus("bendStatus","Good bend! Your pitch is close to the target.","good");
+    } else {
+      setStatus("bendAccuracy","Nearly there…");
+    }
+  } else {
+    bendStableFrames=0;
+    setStatus("bendAccuracy",smoothedCents<0?"Bend higher to reach the target.":"Ease the bend down toward the target.", "warn");
+  }
+}
+function fillBendFrets() {
+  const select=$("bendFret");
+  select.innerHTML="";
+  for(let fret=0;fret<=17;fret++){
+    const option=document.createElement("option");
+    option.value=fret;
+    option.textContent=`Fret ${fret}`;
+    select.appendChild(option);
+  }
+  select.value="7";
+  getBendConfiguration();
+}
+["bendString","bendFret","bendInterval"].forEach(id=>
+  $(id).addEventListener("change",getBendConfiguration)
+);
+$("playBendStart").addEventListener("click",()=>{
+  playGuitarNote(bendStartMidi,1.2);
+});
+$("playBendTarget").addEventListener("click",()=>{
+  playGuitarNote(bendTargetMidi,1.2);
+});
+$("startBendMic").addEventListener("click",async()=>{
+  try{
+    await startPitchMicrophone("bend");
+    setStatus("bendStatus","Microphone on. Play the selected note and bend upward.","good");
+  }catch(e){
+    setStatus("bendStatus",e.message||"Could not start microphone.","bad");
+  }
+});
+$("stopBendMic").addEventListener("click",()=>{
+  if(activeMicMode==="bend")stopPitchMicrophone();
+  $("bendDetected").textContent="—";
+  $("bendDialFeedback").textContent="Listening stopped";
+  setStatus("bendStatus","Bend listening stopped.");
+});
+fillBendFrets();
+
+/* =========================
+   METRONOME
+========================= */
+let metroInterval=null;
+let metroBeat=0;
+let tapTimes=[];
+function getBpm(){return clamp(Number($("bpmInput").value)||90,30,240);}
+function setBpm(value){
+  const bpm=clamp(Math.round(Number(value)||90),30,240);
+  $("bpmInput").value=bpm;
+  $("bpmRange").value=bpm;
+  $("bpmDisplay").textContent=bpm;
+}
+$("bpmRange").addEventListener("input",e=>setBpm(e.target.value));
+$("bpmInput").addEventListener("change",e=>setBpm(e.target.value));
+
+function metroClick(accent=false) {
+  try{
+    const ctx=getAudio();
+    const now=ctx.currentTime;
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    const sound=$("metroSound").value;
+    osc.type=sound==="wood"?"triangle":sound==="click"?"square":"sine";
+    osc.frequency.value=sound==="wood"?(accent?1450:950):(accent?1100:760);
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.gain.exponentialRampToValueAtTime(accent?0.24:0.13,now+0.003);
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+0.055);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(now);osc.stop(now+0.06);
+  }catch(e){console.error(e);}
+}
+function updateBeatLights(beat) {
+  for(let i=1;i<=4;i++){
+    const el=$("beat"+i);
+    if(el)el.classList.toggle("active",i===beat);
+  }
+}
+function stopMetronome(){
+  if(metroInterval)clearInterval(metroInterval);
+  metroInterval=null;
+  updateBeatLights(0);
+  $("startMetro").textContent="▶ Start";
+}
+function startMetronome(){
+  stopMetronome();
+  const bpm=getBpm();
+  const signature=Number($("timeSignature").value);
+  const subdivision=Number($("subdivision").value);
+  const interval=60000/bpm/subdivision;
+  metroBeat=0;
+  metroClick(true);
+  updateBeatLights(1);
+  metroInterval=setInterval(()=>{
+    metroBeat=(metroBeat+1)%(signature*subdivision);
+    const beatNumber=Math.floor(metroBeat/subdivision);
+    const isMain=metroBeat%subdivision===0;
+    if(isMain)updateBeatLights((beatNumber%4)+1);
+    metroClick(metroBeat===0);
+  },interval);
+  $("startMetro").textContent="↻ Restart";
+}
+$("startMetro").addEventListener("click",startMetronome);
+$("stopMetro").addEventListener("click",stopMetronome);
+$("timeSignature").addEventListener("change",()=>{if(metroInterval)startMetronome();});
+$("subdivision").addEventListener("change",()=>{if(metroInterval)startMetronome();});
+$("tapTempo").addEventListener("click",()=>{
+  const now=performance.now();
+  tapTimes=tapTimes.filter(t=>now-t<2500);
+  tapTimes.push(now);
+  if(tapTimes.length>5)tapTimes.shift();
+  if(tapTimes.length>=2){
+    const gaps=[];
+    for(let i=1;i<tapTimes.length;i++)gaps.push(tapTimes[i]-tapTimes[i-1]);
+    const average=gaps.reduce((a,b)=>a+b,0)/gaps.length;
+    setBpm(60000/average);
+  }
+});
+
+/* =========================
+   PRACTICE TIMER + HISTORY
+========================= */
+const HISTORY_KEY="guitarlab-pro-history-v2";
+function loadHistory(){
+  try{
+    const value=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");
+    return Array.isArray(value)?value:[];
+  }catch{return [];}
+}
+function storeHistory(history){
+  try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history));}
+  catch(e){setStatus("timerStatus","Could not save history in this browser.","bad");}
+}
+let sessionStart=null;
+let elapsedBeforeStart=0;
+let timerInterval=null;
+let sessionRunning=false;
+function elapsedSeconds(){
+  return elapsedBeforeStart+(sessionRunning&&sessionStart?(Date.now()-sessionStart)/1000:0);
+}
+function formatTime(seconds){
+  const total=Math.max(0,Math.floor(seconds));
+  const m=Math.floor(total/60),s=total%60;
+  return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+function refreshTimer(){
+  const elapsed=elapsedSeconds();
+  $("timerDisplay").textContent=formatTime(elapsed);
+  const goal=clamp(Number($("timerMinutes").value)||20,1,240)*60;
+  if(elapsed>=goal && sessionRunning){
+    pauseTimer();
+    $("timerStatus").textContent="Goal reached — nice work!";
+  }
+}
+function startTimer(){
+  if(sessionRunning)return;
+  sessionRunning=true;
+  sessionStart=Date.now();
+  timerInterval=setInterval(refreshTimer,250);
+  $("timerStatus").textContent="Session in progress";
+  $("startTimer").textContent="▶ Resume session";
+}
+function pauseTimer(){
+  if(!sessionRunning)return;
+  elapsedBeforeStart+=(Date.now()-sessionStart)/1000;
+  sessionStart=null;
+  sessionRunning=false;
+  if(timerInterval)clearInterval(timerInterval);
+  timerInterval=null;
+  refreshTimer();
+  $("timerStatus").textContent="Session paused";
+}
+function resetTimer(){
+  pauseTimer();
+  elapsedBeforeStart=0;
+  sessionStart=null;
+  refreshTimer();
+  $("timerStatus").textContent="Ready for your next session";
+  $("startTimer").textContent="▶ Start session";
+}
+$("startTimer").addEventListener("click",startTimer);
+$("pauseTimer").addEventListener("click",pauseTimer);
+$("resetTimer").addEventListener("click",resetTimer);
+
+function renderHistory(){
+  const history=loadHistory();
+  const totalMinutes=Math.round(history.reduce((sum,item)=>sum+(item.seconds||0),0)/60);
+  $("metricSessions").textContent=history.length;
+  $("metricMinutes").textContent=totalMinutes;
+  $("metricFocus").textContent=$("practiceFocus").value;
+  if(history.length){
+    const latest=history[0];
+    $("metricLast").textContent=`${Math.round((latest.seconds||0)/60)} min`;
+    $("metricLastNote").textContent=latest.focus||"Practice";
+  }else{
+    $("metricLast").textContent="—";
+    $("metricLastNote").textContent="No session yet";
+  }
+  const html=history.slice(0,5).map(item=>`
+    <div class="history-item">
+      <div><strong>${escapeHTML(item.focus||"Practice")}</strong>
+      <div class="note">${escapeHTML(fmtDate(item.date))}</div></div>
+      <strong>${Math.round((item.seconds||0)/60)} min</strong>
+    </div>`).join("");
+  $("dashboardHistory").innerHTML=html||'<p class="note">Your saved sessions will appear here.</p>';
+  $("practiceHistory").innerHTML=html||'<p class="note">No saved sessions yet.</p>';
+}
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,ch=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[ch]));
+}
+$("saveSession").addEventListener("click",()=>{
+  pauseTimer();
+  const seconds=Math.floor(elapsedBeforeStart);
+  if(seconds<1){
+    setStatus("timerStatus","Start the timer before saving a session.","warn");
+    return;
+  }
+  const history=loadHistory();
+  history.unshift({
+    date:new Date().toISOString(),
+    seconds,
+    focus:$("practiceFocus").value,
+    notes:$("sessionNotes").value.trim(),
+    bpm:getBpm()
+  });
+  storeHistory(history);
+  renderHistory();
+  resetTimer();
+  $("sessionNotes").value="";
+  setStatus("timerStatus","Session saved to your practice history.","good");
+});
+$("exportHistory").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(loadHistory(),null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="guitarlab-practice-history.json";a.click();
+  URL.revokeObjectURL(url);
+});
+$("clearHistory").addEventListener("click",()=>{
+  if(!confirm("Clear all saved practice sessions from this browser?"))return;
+  storeHistory([]);
+  renderHistory();
+});
+$("practiceFocus").addEventListener("change",()=>renderHistory());
+renderHistory();
+
+/* =========================
+   END OF PART 3
+========================= */
+</script><script>
+/* =========================
+   THEORY: FRETBOARD EXPLORER
+========================= */
+const SCALE_INTERVALS={
+  major:[0,2,4,5,7,9,11],
+  minor:[0,2,3,5,7,8,10],
+  pentMajor:[0,2,4,7,9],
+  pentMinor:[0,3,5,7,10],
+  blues:[0,3,5,6,7,10]
+};
+function renderScale(){
+  const rootName=$("scaleRoot").value;
+  const scaleType=$("scaleType").value;
+  const root=ROOT_PITCH[rootName];
+  const intervals=SCALE_INTERVALS[scaleType];
+  const pcs=new Set(intervals.map(n=>(root+n)%12));
+  const svg=$("scaleDiagram");
+  const left=42,right=330,top=30,bottom=184;
+  const gapX=(right-left)/4;
+  const gapY=(bottom-top)/5;
+  let out=`<rect x="${left}" y="${top}" width="${right-left}" height="${bottom-top}" fill="#171923" stroke="#444653"/>`;
+  for(let f=0;f<=4;f++){
+    const x=left+f*gapX;
+    out+=`<line x1="${x}" y1="${top}" x2="${x}" y2="${bottom}" stroke="#555969" stroke-width="${f===0?3:1.4}"/>`;
+  }
+  for(let s=0;s<6;s++){
+    const y=top+s*gapY;
+    out+=`<line x1="${left}" y1="${y}" x2="${right}" y2="${y}" stroke="#8b8e9d" stroke-width="1.2"/>`;
+  }
+  // Show four frets plus the open-string positions.
+  for(let s=0;s<6;s++){
+    for(let fret=0;fret<=4;fret++){
+      const midi=STANDARD_TUNING[5-s]+fret;
+      if(!pcs.has(midi%12))continue;
+      const x=fret===0?left-12:left+(fret-.5)*gapX;
+      const y=top+s*gapY;
+      const isRoot=midi%12===root;
+      out+=`<circle cx="${x}" cy="${y}" r="${isRoot?9:7}" fill="${isRoot?"#a78bfa":"#67e8b1"}"/>`;
+      if(isRoot){
+        out+=`<text x="${x}" y="${y+3}" font-size="8" fill="#11131a" font-weight="800" text-anchor="middle">${NOTE_NAMES[midi%12]}</text>`;
+      }
+    }
+  }
+  for(let fret=1;fret<=4;fret++){
+    out+=`<text x="${left+(fret-.5)*gapX}" y="211" font-size="11" fill="#9b9fb0" text-anchor="middle">${fret}</text>`;
+  }
+  svg.innerHTML=out;
+  const names=intervals.map(n=>NOTE_NAMES[(root+n)%12]);
+  $("scaleSummary").textContent=`${rootName} ${$("scaleType").selectedOptions[0].text}: ${names.join(" · ")}. Purple marks the root; green marks the other scale notes.`;
+}
+$("scaleRoot").addEventListener("change",renderScale);
+$("scaleType").addEventListener("change",renderScale);
+renderScale();
+
+/* =========================
+   EAR TRAINING QUIZ
+========================= */
+let quizMidi=null;
+let quizCorrect=0;
+let quizTotal=0;
+
+function randomQuizMidi(){
+  // C4 through B5: two octaves to make note recognition more useful.
+  return 60+Math.floor(Math.random()*24);
+}
+function makeQuizChoices(correctMidi){
+  const correctPC=correctMidi%12;
+  const all=NOTE_NAMES.map((name,pc)=>({name,pc}));
+  const distractors=all.filter(n=>n.pc!==correctPC);
+  for(let i=distractors.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [distractors[i],distractors[j]]=[distractors[j],distractors[i]];
+  }
+  return [
+    {name:NOTE_NAMES[correctPC],pc:correctPC},
+    ...distractors.slice(0,5)
+  ].sort(()=>Math.random()-.5);
+}
+function newQuiz(){
+  quizMidi=randomQuizMidi();
+  $("quizQuestion").textContent="Listen";
+  $("quizFeedback").textContent="Listen to the note, then choose its pitch class.";
+  $("quizChoices").innerHTML="";
+  makeQuizChoices(quizMidi).forEach(choice=>{
+    const button=document.createElement("button");
+    button.className="note-btn quiz-choice";
+    button.textContent=choice.name;
+    button.addEventListener("click",()=>{
+      quizTotal++;
+      if(choice.pc===quizMidi%12){
+        quizCorrect++;
+        $("quizFeedback").textContent=`Correct! ${midiName(quizMidi)}.`;
+        $("quizFeedback").style.color="var(--green)";
+      }else{
+        $("quizFeedback").textContent=`Not quite — the note was ${midiName(quizMidi)}.`;
+        $("quizFeedback").style.color="var(--red)";
+      }
+      $("quizQuestion").textContent=midiName(quizMidi);
+      $("quizScore").textContent=`${quizCorrect} / ${quizTotal}`;
+      document.querySelectorAll("#quizChoices button").forEach(b=>{
+        b.disabled=true;
+        if(b.textContent===NOTE_NAMES[quizMidi%12])b.classList.add("active");
+      });
+    });
+    $("quizChoices").appendChild(button);
+  });
+  playEarNote(quizMidi);
+}
+function playEarNote(midi,duration=0.85){
+  // Same guitar-like timbre used for quiz playback and reference notes.
+  playGuitarNote(midi,duration);
+}
+$("newQuiz").addEventListener("click",newQuiz);
+$("replayQuiz").addEventListener("click",()=>{
+  if(quizMidi!==null)playEarNote(quizMidi);
+  else setStatus("referenceStatus","Start a question first.");
+});
+
+/* =========================
+   NOTE REFERENCE PANEL
+========================= */
+function referenceMidi(noteName,octave){
+  return noteMidi(noteName,octave);
+}
+function renderReferenceNotes(){
+  const octave=Number($("referenceOctave").value);
+  const container=$("referenceNotes");
+  container.innerHTML="";
+  NOTE_NAMES.forEach(note=>{
+    const midi=referenceMidi(note,octave);
+    const button=document.createElement("button");
+    button.className="note-btn";
+    button.textContent=note;
+    button.title=`Play ${midiName(midi)}`;
+    button.addEventListener("click",()=>{
+      document.querySelectorAll("#referenceNotes .note-btn").forEach(b=>b.classList.remove("playing"));
+      button.classList.add("playing");
+      playEarNote(midi);
+      $("referenceStatus").textContent=`Playing ${midiName(midi)} · ${midiFreq(midi).toFixed(1)} Hz`;
+    });
+    container.appendChild(button);
+  });
+  populateCompareSelectors();
+}
+function populateCompareSelectors(){
+  const octave=Number($("referenceOctave").value);
+  const first=$("compareNoteA");
+  const second=$("compareNoteB");
+  const oldA=first.value;
+  const oldB=second.value;
+  first.innerHTML="";
+  second.innerHTML="";
+  NOTE_NAMES.forEach((note,index)=>{
+    const midi=referenceMidi(note,octave);
+    const label=midiName(midi);
+    [first,second].forEach(select=>{
+      const option=document.createElement("option");
+      option.value=String(midi);
+      option.textContent=label;
+      select.appendChild(option);
+    });
+  });
+  first.value=[...first.options].some(o=>o.value===oldA)?oldA:String(referenceMidi("C",octave));
+  second.value=[...second.options].some(o=>o.value===oldB)?oldB:String(referenceMidi("G",octave));
+}
+$("referenceOctave").addEventListener("change",renderReferenceNotes);
+
+$("playNoteA").addEventListener("click",()=>{
+  const midi=Number($("compareNoteA").value);
+  playEarNote(midi);
+  $("referenceStatus").textContent=`Playing ${midiName(midi)}`;
+});
+$("playNoteB").addEventListener("click",()=>{
+  const midi=Number($("compareNoteB").value);
+  playEarNote(midi);
+  $("referenceStatus").textContent=`Playing ${midiName(midi)}`;
+});
+$("playCompare").addEventListener("click",async()=>{
+  const a=Number($("compareNoteA").value);
+  const b=Number($("compareNoteB").value);
+  if(a===b){
+    playEarNote(a);
+    $("referenceStatus").textContent=`Both selections are ${midiName(a)}. Playing the note once.`;
+    return;
+  }
+  if($("compareMode").value==="together"){
+    playGuitarNote(a,1.1);
+    playGuitarNote(b,1.1,0);
+    $("referenceStatus").textContent=`Playing ${midiName(a)} and ${midiName(b)} together.`;
+  }else{
+    playGuitarNote(a,0.8);
+    playGuitarNote(b,0.8,0.95);
+    $("referenceStatus").textContent=`Playing ${midiName(a)}, then ${midiName(b)}.`;
+  }
+});
+renderReferenceNotes();
+
+/* =========================
+   GENERAL INITIALISATION
+========================= */
+setBpm(90);
+refreshTimer();
+renderHistory();
+
+// Avoid leaving a microphone running when the page is closed.
+window.addEventListener("pagehide",()=>{
+  stopPitchMicrophone();
+  stopMetronome();
+  if(timerInterval)clearInterval(timerInterval);
+});
+
+/* =========================
+   END OF GUITARLAB PRO
+========================= */
 </script>
-</body></html>
+</body>
+</html>
+========================= */
