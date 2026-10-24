@@ -1,0 +1,21 @@
+{
+  "name": "Guitar Practice & Pitch Assistant",
+  "short_name": "Guitar Pitch",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "description": "Guitar practice app featuring precision pitch bend detection, tuner, metronome, and chord visualizer.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2907/2907253.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2907/2907253.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
