@@ -1,632 +1,1034 @@
+
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Guitar Practice & Pitch Assistant</title>
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2907/2907253.png">
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0f172a',
-                        cardBg: '#1e293b',
-                        accent: '#10b981',
-                        accentGlow: '#34d399',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .glow-green { box-shadow: 0 0 25px rgba(16, 185, 129, 0.4); }
-        .glow-blue { box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); }
-        body { -webkit-user-select: none; user-select: none; touch-action: manipulation; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="description" content="GuitarLab Pro is a guitar practice studio with a bend trainer, tuner, chord library, metronome, fretboard note finder and practice tracker.">
+<title>GuitarLab Pro — Guitar Practice Studio</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg:#0b1020;
+  --panel:#141e32;
+  --panel2:#080e1b;
+  --line:#2d3c56;
+  --text:#e5edf8;
+  --muted:#99a8bd;
+  --green:#34d399;
+  --greenDark:#064e3b;
+  --amber:#fbbf24;
+  --red:#fb7185;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+header{background:#10192b;border-bottom:1px solid var(--line);padding:15px 16px}
+.headerInner{max-width:1000px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brandIcon{font-size:27px}
+h1{font-size:19px;margin:0}
+.tagline{font-size:11px;color:var(--muted);margin-top:2px}
+.micStatus{font-size:11px;color:var(--muted);text-align:right}
+main{max-width:1000px;margin:auto;padding:16px}
+nav{display:flex;gap:7px;overflow-x:auto;padding:3px 0 12px;scrollbar-width:thin}
+.tab{flex:0 0 auto;border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:#121b2c;color:var(--muted);font-size:12px;font-weight:750}
+.tab.active{background:var(--green);color:#052e2b;border-color:var(--green)}
+.panel{display:none}
+.panel.active{display:block}
+.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px}
+.full{grid-column:1/-1}
+h2{font-size:17px;margin:0 0 8px}
+h3{font-size:14px;margin:0 0 10px}
+p{line-height:1.55}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;align-items:center;gap:9px}
+.row>*{min-width:0;flex:1}
+.row.wrap{flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+label{display:block;color:var(--muted);font-size:12px;min-width:0}
+input[type=number],input[type=text],select{display:block;width:100%;margin-top:6px;padding:10px;background:var(--panel2);border:1px solid #3a4b66;border-radius:9px;color:var(--text);min-width:0}
+input[type=range]{width:100%;accent-color:var(--green)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.btn{border:1px solid #41536e;border-radius:10px;padding:11px 12px;background:#26364e;color:var(--text);font-weight:700;font-size:12px}
+.btn.primary{background:var(--green);border-color:var(--green);color:#052e2b}
+.btn.ghost{background:transparent}
+.btn.danger{border-color:#754052;color:#fecdd3}
+.bigNote{font-size:30px;font-weight:850;line-height:1.2;margin:7px 0}
+.noteBox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;text-align:center;padding:15px 8px;min-width:0}
+.noteBox.target{border-color:#087b58}
+.green{color:var(--green)}
+.amber{color:var(--amber)}
+.status{min-height:36px;text-align:center;padding:10px 2px;font-size:13px;color:var(--muted)}
+.meter{background:var(--panel2);border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:14px}
+.meterHead{display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:10px}
+.scale{height:48px;position:relative;background:#111b2d;border-radius:7px;overflow:hidden}
+.sweetZone{position:absolute;left:40%;width:20%;height:100%;background:#10b9812b;border-left:1px solid var(--green);border-right:1px solid var(--green)}
+.centerLine{position:absolute;left:50%;height:100%;border-left:1px solid #f8fafc}
+.needle{position:absolute;left:50%;top:3px;bottom:14px;width:5px;border-radius:5px;background:#94a3b8;transform:translateX(-50%)}
+.scaleLabels{position:absolute;bottom:1px;left:6px;right:6px;display:flex;justify-content:space-between;color:var(--muted);font-size:9px}
+.track{height:8px;background:var(--panel2);border-radius:8px;overflow:hidden;margin-top:8px}
+.fill{height:100%;width:0;background:var(--green);transition:width .05s linear}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.stat{background:var(--panel2);padding:10px 4px;text-align:center;border-radius:9px}
+.stat small{display:block;font-size:10px;color:var(--muted)}
+.stat strong{display:block;margin-top:5px;font-size:14px;overflow-wrap:anywhere}
+canvas{width:100%;height:120px;display:block;background:var(--panel2);border-radius:10px;margin-top:13px}
+.chordList{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.chordPick{background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px 3px;font-size:12px;font-weight:750}
+.chordPick.active{border-color:var(--green);color:var(--green);background:#0b2a27}
+.chordDetails{display:grid;grid-template-columns:180px minmax(0,1fr);gap:15px;align-items:start}
+.diagram{width:100%;max-width:220px;height:auto;background:var(--panel2);border-radius:10px}
+.stringNotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}
+.stringNote{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 4px;text-align:center;font-size:11px}
+.fretWrap{overflow-x:auto;padding-bottom:8px}
+.fretboard{display:grid;grid-template-columns:35px repeat(13,minmax(29px,1fr));gap:2px;min-width:450px}
+.fretLabel{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);min-height:27px}
+.fretCell{min-width:0;min-height:32px;padding:2px;border:1px solid #34435b;border-radius:4px;background:#182a3a;color:#d7e1ee;font-size:10px;position:relative}
+.fretCell.open{background:#111b2c}
+.fretCell.root{background:#047857;color:white;border-color:#34d399;font-weight:800}
+.fretCell.selected{outline:2px solid var(--amber);outline-offset:-2px}
+.fretCell .dot{display:block;font-size:8px;opacity:.75}
+.beatDots{display:flex;gap:9px;justify-content:center;margin:20px 0}
+.beatDot{width:20px;height:20px;border-radius:50%;background:#334155;border:2px solid #64748b}
+.beatDot.active{background:var(--green);border-color:#a7f3d0;box-shadow:0 0 14px #34d39988}
+.beatDot.first{width:25px;height:25px}
+.bpmDisplay{text-align:center;font-size:55px;font-weight:850;line-height:1.2}
+.bpmDisplay small{font-size:14px;color:var(--muted);font-weight:500}
+.toggleRow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:12px}
+.toggleRow input{accent-color:var(--green)}
+.checkList{display:grid;gap:8px}
+.checkItem{display:flex;align-items:center;gap:9px;background:var(--panel2);padding:10px;border-radius:9px;font-size:12px}
+.checkItem input{accent-color:var(--green)}
+details{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+summary{cursor:pointer;font-size:12px;font-weight:750}
+ol{padding-left:20px;color:var(--muted);font-size:12px;line-height:1.8}
+footer{max-width:1000px;margin:auto;padding:0 16px 25px;color:var(--muted);font-size:11px;line-height:1.6}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#e2e8f0;color:#0b1020;padding:11px 16px;border-radius:10px;font-size:12px;font-weight:700;box-shadow:0 8px 35px #0008;display:none;z-index:10;max-width:90%;text-align:center}
+@media(max-width:650px){
+ main{padding:10px}
+ .layout{grid-template-columns:1fr}
+ .full{grid-column:auto}
+ .card{padding:14px}
+ .chordDetails{grid-template-columns:125px minmax(0,1fr);gap:10px}
+ .chordList{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .grid3{gap:6px}
+ .row{gap:7px}
+ .btn{padding:10px 6px}
+ .bigNote{font-size:25px}
+}
+@media(max-width:360px){
+ .chordDetails{grid-template-columns:1fr}
+ .diagram{max-width:190px;margin:auto}
+ .grid3{grid-template-columns:1fr}
+ .stats{gap:4px}
+ .stat strong{font-size:12px}
+}
+</style>
 </head>
-<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col font-sans">
-
-    <!-- Header -->
-    <header class="bg-cardBg border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-lg font-bold flex items-center gap-2">
-                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
-                GuitarLab PWA
-            </h1>
-            <button id="mic-toggle-btn" onclick="toggleMicrophone()" class="bg-accent hover:bg-emerald-600 text-slate-900 font-semibold px-4 py-1.5 rounded-full text-sm transition flex items-center gap-1.5 shadow">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-                <span id="mic-btn-text">Enable Mic</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Main Navigation Tabs -->
-    <nav class="bg-cardBg/80 backdrop-blur border-b border-slate-700 px-2 py-2 sticky top-[65px] z-40">
-        <div class="max-w-md mx-auto grid grid-cols-4 gap-1 text-center text-xs font-medium text-slate-400">
-            <button onclick="switchTab('tuner')" id="nav-tuner" class="py-2 rounded-lg bg-slate-700 text-slate-100 transition">Tuner</button>
-            <button onclick="switchTab('bend')" id="nav-bend" class="py-2 rounded-lg hover:bg-slate-700 hover:text-slate-200 transition">Bends</button>
-            <button onclick="switchTab('chords')" id="nav-chords" class="py-2 rounded-lg hover:bg-slate-700 hover:text-slate-200 transition">Chords</button>
-            <button onclick="switchTab('metronome')" id="nav-metronome" class="py-2 rounded-lg hover:bg-slate-700 hover:text-slate-200 transition">Metronome</button>
-        </div>
-    </nav>
-
-    <!-- Content Area -->
-    <main class="max-w-md mx-auto w-full p-4 flex-grow mb-16">
-
-        <!-- ================= 1. TUNER TAB ================= -->
-        <div id="tab-tuner" class="space-y-6">
-            <div class="bg-cardBg rounded-2xl p-6 border border-slate-700 text-center shadow-xl">
-                <h2 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Precision Tuner</h2>
-                <div id="tuner-note" class="text-7xl font-black text-accent my-4 tracking-tight">-</div>
-                <div id="tuner-freq" class="text-slate-400 text-sm mb-6">0.0 Hz</div>
-
-                <!-- Cents Needle Meter -->
-                <div class="relative w-full bg-slate-900 h-14 rounded-xl flex items-center justify-center overflow-hidden border border-slate-700">
-                    <div class="absolute inset-x-0 flex justify-between px-4 text-[10px] text-slate-500 font-mono">
-                        <span>-50</span><span>-25</span><span class="text-slate-300 font-bold">0</span><span>+25</span><span>+50</span>
-                    </div>
-                    <div class="absolute h-8 w-0.5 bg-slate-600"></div>
-                    <div id="tuner-needle" class="absolute w-2 h-10 bg-accent rounded-full transition-all duration-75 left-1/2 transform -translate-x-1/2"></div>
-                </div>
-                <div id="tuner-status" class="mt-4 text-sm font-medium text-slate-400">Listening for guitar string...</div>
-            </div>
-
-            <!-- Reference Pitches -->
-            <div class="bg-cardBg rounded-2xl p-5 border border-slate-700">
-                <h3 class="text-sm font-semibold text-slate-300 mb-3">Reference Tones (Standard E)</h3>
-                <div class="grid grid-cols-6 gap-2">
-                    <button onclick="playTone(329.63)" class="bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold">E4</button>
-                    <button onclick="playTone(246.94)" class="bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold">B3</button>
-                    <button onclick="playTone(196.00)" class="bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold">G3</button>
-                    <button onclick="playTone(146.83)" class="bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold">D3</button>
-                    <button onclick="playTone(110.00)" class="bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold">A2</button>
-                    <button onclick="playTone(82.41)" class="bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-xs font-bold">E2</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= 2. BEND TRAINER TAB ================= -->
-        <div id="tab-bend" class="space-y-6 hidden">
-            <div class="bg-cardBg rounded-2xl p-6 border border-slate-700 shadow-xl">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-slate-300 text-sm font-bold uppercase tracking-wider">Bend Trainer</h2>
-                    <button onclick="playBendTargetTone()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1">
-                        🔊 Hear Target
-                    </button>
-                </div>
-
-                <!-- Bend Settings -->
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">String & Fret</label>
-                        <select id="bend-string-fret" onchange="updateBendTarget()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm">
-                            <option value="G3_7">G String - 7th Fret (D)</option>
-                            <option value="G3_9" selected>G String - 9th Fret (E)</option>
-                            <option value="B3_8">B String - 8th Fret (G)</option>
-                            <option value="B3_10">B String - 10th Fret (A)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Bend Interval</label>
-                        <select id="bend-interval" onchange="updateBendTarget()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm">
-                            <option value="1">1 Semitone (1/2 Step)</option>
-                            <option value="2" selected>2 Semitones (Full Step)</option>
-                            <option value="3">3 Semitones (1.5 Step)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Target & Current Display -->
-                <div class="grid grid-cols-2 gap-3 text-center mb-4">
-                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                        <span class="text-xs text-slate-500 block">Start Pitch</span>
-                        <span id="bend-start-note" class="text-lg font-bold text-slate-300">E4</span>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                        <span class="text-xs text-slate-500 block">Target Pitch</span>
-                        <span id="bend-target-note" class="text-lg font-bold text-accent">F#4</span>
-                    </div>
-                </div>
-
-                <!-- Canvas Pitch Curve Graph -->
-                <div class="relative bg-slate-900 rounded-xl overflow-hidden border border-slate-700 h-36 mb-4">
-                    <canvas id="bend-canvas" width="350" height="140" class="w-full h-full"></canvas>
-                    <div class="absolute top-2 left-2 text-[10px] bg-slate-800/80 px-2 py-0.5 rounded text-slate-300">Target Line</div>
-                </div>
-
-                <!-- Live Stability Meter -->
-                <div class="space-y-2">
-                    <div class="flex justify-between text-xs">
-                        <span class="text-slate-400">Bend Accuracy</span>
-                        <span id="bend-accuracy-text" class="text-accent font-bold">0%</span>
-                    </div>
-                    <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden p-0.5 border border-slate-700">
-                        <div id="bend-progress-bar" class="bg-accent h-full rounded-full transition-all duration-100" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= 3. CHORDS & BARRE TAB ================= -->
-        <div id="tab-chords" class="space-y-6 hidden">
-            <div class="bg-cardBg rounded-2xl p-6 border border-slate-700 shadow-xl">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-slate-300 text-sm font-bold uppercase tracking-wider">Chord & Barre Visualizer</h2>
-                    <select id="chord-select" onchange="renderChord()" class="bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-xs">
-                        <option value="F">F Major (Barre)</option>
-                        <option value="Bm">Bm (Barre)</option>
-                        <option value="C">C Major</option>
-                        <option value="Am">A Minor</option>
-                        <option value="G">G Major</option>
-                        <option value="Em">E Minor</option>
-                    </select>
-                </div>
-
-                <!-- Fretboard SVG Display -->
-                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 flex justify-center mb-4">
-                    <svg id="chord-svg" width="260" height="220" viewBox="0 0 260 220" class="overflow-visible"></svg>
-                </div>
-
-                <div id="chord-info" class="text-center text-sm text-slate-300 font-medium mb-4">F Major Barre Chord: Index finger across 1st fret.</div>
-
-                <button onclick="testChordClarity()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-100 py-2.5 rounded-xl text-sm font-semibold transition shadow">
-                    Check String Clarity (Arpeggio Test)
-                </button>
-            </div>
-        </div>
-
-        <!-- ================= 4. METRONOME TAB ================= -->
-        <div id="tab-metronome" class="space-y-6 hidden">
-            <div class="bg-cardBg rounded-2xl p-6 border border-slate-700 shadow-xl text-center">
-                <h2 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-4">Practice Metronome</h2>
-                
-                <div id="bpm-display" class="text-6xl font-black text-accent mb-2">120</div>
-                <div class="text-xs text-slate-400 uppercase tracking-widest mb-6">BPM</div>
-
-                <!-- Beat Indicator Lights -->
-                <div id="beat-indicators" class="flex justify-center gap-2 mb-6">
-                    <div class="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 beat-dot" data-beat="0"></div>
-                    <div class="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 beat-dot" data-beat="1"></div>
-                    <div class="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 beat-dot" data-beat="2"></div>
-                    <div class="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 beat-dot" data-beat="3"></div>
-                </div>
-
-                <!-- BPM Controls -->
-                <div class="flex items-center justify-center gap-4 mb-6">
-                    <button onclick="adjustBPM(-5)" class="w-12 h-12 bg-slate-700 hover:bg-slate-600 rounded-xl text-lg font-bold shadow">-5</button>
-                    <input type="range" id="bpm-slider" min="40" max="240" value="120" oninput="setBPM(this.value)" class="w-48 accent-accent">
-                    <button onclick="adjustBPM(5)" class="w-12 h-12 bg-slate-700 hover:bg-slate-600 rounded-xl text-lg font-bold shadow">+5</button>
-                </div>
-
-                <div class="flex gap-2">
-                    <button id="metronome-play-btn" onclick="toggleMetronome()" class="flex-1 bg-accent hover:bg-emerald-600 text-slate-900 py-3 rounded-xl font-bold transition shadow">Start Click</button>
-                    <button onclick="tapTempo()" class="px-5 bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-bold transition text-sm">Tap Tempo</button>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- App Logic Script -->
-    <script>
-        // --- Navigation Switcher ---
-        function switchTab(tabId) {
-            ['tuner', 'bend', 'chords', 'metronome'].forEach(id => {
-                document.getElementById('tab-' + id).classList.add('hidden');
-                document.getElementById('nav-' + id).classList.remove('bg-slate-700', 'text-slate-100');
-                document.getElementById('nav-' + id).classList.add('hover:bg-slate-700', 'hover:text-slate-200');
-            });
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            document.getElementById('nav-' + tabId).classList.add('bg-slate-700', 'text-slate-100');
-            document.getElementById('nav-' + tabId).classList.remove('hover:bg-slate-700', 'hover:text-slate-200');
-        }
-
-        // --- Audio Engine & Pitch Detection ---
-        let audioCtx = null;
-        let analyser = null;
-        let micStream = null;
-        let isListening = false;
-        let animationId = null;
-
-        const noteStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        async function toggleMicrophone() {
-            initAudio();
-            if (isListening) {
-                if (micStream) micStream.getTracks().forEach(track => track.stop());
-                cancelAnimationFrame(animationId);
-                isListening = false;
-                document.getElementById('mic-btn-text').innerText = 'Enable Mic';
-                document.getElementById('mic-toggle-btn').classList.remove('bg-red-500', 'hover:bg-red-600');
-                document.getElementById('mic-toggle-btn').classList.add('bg-accent', 'hover:bg-emerald-600');
-                document.getElementById('tuner-status').innerText = 'Microphone disabled.';
-                return;
-            }
-
-            try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-                const source = audioCtx.createMediaStreamSource(micStream);
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 2048;
-                source.connect(analyser);
-                isListening = true;
-
-                document.getElementById('mic-btn-text').innerText = 'Stop Mic';
-                document.getElementById('mic-toggle-btn').classList.remove('bg-accent', 'hover:bg-emerald-600');
-                document.getElementById('mic-toggle-btn').classList.add('bg-red-500', 'hover:bg-red-600');
-                document.getElementById('tuner-status').innerText = 'Listening for guitar...';
-
-                detectPitch();
-            } catch (err) {
-                alert('Microphone permission denied or unavailable.');
-            }
-        }
-
-        // Autocorrelation / YIN-style Pitch Estimator
-        function autoCorrelate(buffer, sampleRate) {
-            let SIZE = buffer.length;
-            let sumOfSquares = 0;
-            for (let i = 0; i < SIZE; i++) {
-                sumOfSquares += buffer[i] * buffer[i];
-            }
-            let rootMeanSquare = Math.sqrt(sumOfSquares / SIZE);
-            if (rootMeanSquare < 0.01) return -1;
-
-            let r1 = 0, r2 = SIZE - 1;
-            for (let i = 0; i < SIZE / 2; i++) {
-                if (Math.abs(buffer[i]) < 0.2) { r1 = i; break; }
-            }
-            for (let i = 1; i < SIZE / 2; i++) {
-                if (Math.abs(buffer[SIZE - i]) < 0.2) { r2 = SIZE - i; break; }
-            }
-
-            buffer = buffer.slice(r1, r2);
-            SIZE = buffer.length;
-
-            let c = new Float32Array(SIZE);
-            for (let i = 0; i < SIZE; i++) {
-                for (let j = 0; j < SIZE - i; j++) {
-                    c[i] = c[i] + buffer[j] * buffer[j + i];
-                }
-            }
-
-            let d = 0;
-            while (c[d] > c[d + 1]) d++;
-            let maxval = -1, maxpos = -1;
-            for (let i = d; i < SIZE; i++) {
-                if (c[i] > maxval) {
-                    maxval = c[i];
-                    maxpos = i;
-                }
-            }
-            let T0 = maxpos;
-            return sampleRate / T0;
-        }
-
-        function noteFromPitch(frequency) {
-            let noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
-            return Math.round(noteNum) + 69;
-        }
-
-        function centsOffFromPitch(frequency, note) {
-            return Math.floor(1200 * Math.log(frequency / frequencyFromNoteNumber(note)) / Math.log(2));
-        }
-
-        function frequencyFromNoteNumber(note) {
-            return 440 * Math.pow(2, (note - 69) / 12);
-        }
-
-        let bendHistory = [];
-        function detectPitch() {
-            if (!isListening) return;
-            let buf = new Float32Array(2048);
-            analyser.getFloatTimeDomainData(buf);
-            let ac = autoCorrelate(buf, audioCtx.sampleRate);
-
-            if (ac !== -1) {
-                let note = noteFromPitch(ac);
-                let noteName = noteStrings[note % 12];
-                let octave = Math.floor(note / 12) - 1;
-                let cents = centsOffFromPitch(ac, note);
-
-                // Update Tuner UI
-                document.getElementById('tuner-note').innerText = noteName + octave;
-                document.getElementById('tuner-freq').innerText = ac.toFixed(1) + ' Hz';
-                
-                let needlePos = 50 + (cents / 50) * 50;
-                needlePos = Math.max(5, Math.min(95, needlePos));
-                document.getElementById('tuner-needle').style.left = needlePos + '%';
-
-                if (Math.abs(cents) < 5) {
-                    document.getElementById('tuner-status').innerText = 'In Tune! 🎯';
-                    document.getElementById('tuner-status').className = 'mt-4 text-sm font-bold text-accent';
-                } else if (cents > 0) {
-                    document.getElementById('tuner-status').innerText = 'Sharp (Lower pitch)';
-                    document.getElementById('tuner-status').className = 'mt-4 text-sm font-medium text-yellow-400';
-                } else {
-                    document.getElementById('tuner-status').innerText = 'Flat (Raise pitch)';
-                    document.getElementById('tuner-status').className = 'mt-4 text-sm font-medium text-orange-400';
-                }
-
-                // Update Bend Trainer
-                updateBendTrainerState(ac);
-            }
-            animationId = requestAnimationFrame(detectPitch);
-        }
-
-        // --- Reference Audio Tone Synthesizer ---
-        function playTone(freq) {
-            initAudio();
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.frequency.value = freq;
-            osc.type = 'triangle';
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
-            osc.stop(audioCtx.currentTime + 1.2);
-        }
-
-        // --- Bend Trainer Logic ---
-        const frequencies = {
-            'G3_7': 164.81, // E4 start
-            'G3_9': 196.00, // G3 start
-            'B3_8': 207.65, // G#3 start
-            'B3_10': 220.00 // A3 start
-        };
-
-        function updateBendTarget() {
-            let val = document.getElementById('bend-string-fret').value;
-            let interval = parseInt(document.getElementById('bend-interval').value);
-            let baseFreq = frequencies[val];
-            let targetFreq = baseFreq * Math.pow(2, interval / 12);
-            
-            document.getElementById('bend-start-note').innerText = val;
-            document.getElementById('bend-target-note').innerText = targetFreq.toFixed(1) + ' Hz';
-        }
-
-        function playBendTargetTone() {
-            let val = document.getElementById('bend-string-fret').value;
-            let interval = parseInt(document.getElementById('bend-interval').value);
-            let baseFreq = frequencies[val];
-            let targetFreq = baseFreq * Math.pow(2, interval / 12);
-            playTone(targetFreq);
-        }
-
-        function updateBendTrainerState(currentFreq) {
-            let val = document.getElementById('bend-string-fret').value;
-            let interval = parseInt(document.getElementById('bend-interval').value);
-            let baseFreq = frequencies[val];
-            let targetFreq = baseFreq * Math.pow(2, interval / 12);
-
-            let canvas = document.getElementById('bend-canvas');
-            let ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw target line
-            ctx.strokeStyle = '#34d399';
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(0, 40);
-            ctx.lineTo(canvas.width, 40);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            bendHistory.push(currentFreq);
-            if (bendHistory.length > canvas.width) bendHistory.shift();
-
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            for (let i = 0; i < bendHistory.length; i++) {
-                let f = bendHistory[i];
-                let y = canvas.height - ((f - baseFreq) / (targetFreq - baseFreq)) * 80;
-                y = Math.max(10, Math.min(canvas.height - 10, y));
-                if (i === 0) ctx.moveTo(i, y);
-                else ctx.lineTo(i, y);
-            }
-            ctx.stroke();
-
-            // Calculate accuracy
-            let diff = Math.abs(currentFreq - targetFreq);
-            let acc = Math.max(0, 100 - (diff / targetFreq) * 500);
-            document.getElementById('bend-accuracy-text').innerText = Math.round(acc) + '%';
-            document.getElementById('bend-progress-bar').style.width = acc + '%';
-        }
-
-        // --- Chord & Barre Visualizer ---
-        const chordData = {
-            'F': { name: 'F Major (Barre)', frets: [1, 3, 3, 2, 1, 1], barre: 1 },
-            'Bm': { name: 'Bm Barre', frets: [-1, 2, 4, 4, 3, 2], barre: 2 },
-            'C': { name: 'C Major', frets: [-1, 3, 2, 0, 1, 0], barre: 0 },
-            'Am': { name: 'A Minor', frets: [-1, 0, 2, 2, 1, 0], barre: 0 },
-            'G': { name: 'G Major', frets: [3, 2, 0, 0, 0, 3], barre: 0 },
-            'Em': { name: 'E Minor', frets: [0, 2, 2, 0, 0, 0], barre: 0 }
-        };
-
-        function renderChord() {
-            let key = document.getElementById('chord-select').value;
-            let chord = chordData[key];
-            let svg = document.getElementById('chord-svg');
-            svg.innerHTML = '';
-
-            document.getElementById('chord-info').innerText = chord.name + ' chord diagram.';
-
-            let startX = 40, startY = 30, stringSpacing = 32, fretSpacing = 35;
-            
-            let nut = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            nut.setAttribute('x', startX);
-            nut.setAttribute('y', startY);
-            nut.setAttribute('width', 160);
-            nut.setAttribute('height', 6);
-            nut.setAttribute('fill', '#cbd5e1');
-            svg.appendChild(nut);
-
-            for (let f = 1; f <= 4; f++) {
-                let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', startX); line.setAttribute('y1', startY + f * fretSpacing);
-                line.setAttribute('x2', startX + 160); line.setAttribute('y2', startY + f * fretSpacing);
-                line.setAttribute('stroke', '#475569'); line.setAttribute('stroke-width', '2');
-                svg.appendChild(line);
-            }
-            for (let s = 0; s < 6; s++) {
-                let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', startX + s * stringSpacing); line.setAttribute('y1', startY);
-                line.setAttribute('x2', startX + s * stringSpacing); line.setAttribute('y2', startY + 4 * fretSpacing);
-                line.setAttribute('stroke', '#64748b'); line.setAttribute('stroke-width', s < 3 ? '2' : '1.2');
-                svg.appendChild(line);
-            }
-
-            if (chord.barre > 0) {
-                let barreRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                barreRect.setAttribute('x', startX - 6);
-                barreRect.setAttribute('y', startY + (chord.barre - 1) * fretSpacing + 12);
-                barreRect.setAttribute('width', 172);
-                barreRect.setAttribute('height', 12);
-                barreRect.setAttribute('rx', '6');
-                barreRect.setAttribute('fill', '#10b981');
-                barreRect.setAttribute('opacity', '0.8');
-                svg.appendChild(barreRect);
-            }
-
-            chord.frets.forEach((fret, string) => {
-                let cx = startX + string * stringSpacing;
-                if (fret === -1) {
-                    let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', cx); text.setAttribute('y', startY - 8);
-                    text.setAttribute('fill', '#ef4444'); text.setAttribute('font-size', '12');
-                    text.setAttribute('text-anchor', 'middle'); text.textContent = '×';
-                    svg.appendChild(text);
-                } else if (fret === 0) {
-                    let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', cx); text.setAttribute('y', startY - 8);
-                    text.setAttribute('fill', '#34d399'); text.setAttribute('font-size', '12');
-                    text.setAttribute('text-anchor', 'middle'); text.textContent = '○';
-                    svg.appendChild(text);
-                } else {
-                    let cy = startY + (fret - 0.5) * fretSpacing;
-                    let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', '9');
-                    circle.setAttribute('fill', '#10b981');
-                    svg.appendChild(circle);
-
-                    let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', cx); text.setAttribute('y', cy + 3.5);
-                    text.setAttribute('fill', '#0f172a'); text.setAttribute('font-size', '10');
-                    text.setAttribute('font-weight', 'bold'); text.setAttribute('text-anchor', 'middle');
-                    text.textContent = fret;
-                    svg.appendChild(text);
-                }
-            });
-        }
-        renderChord();
-
-        function testChordClarity() {
-            alert('Arpeggio test initiated! Strum strings one by one to verify clear pressure.');
-        }
-
-        // --- Metronome Logic ---
-        let metronomeInterval = null;
-        let isPlayingMetronome = false;
-        let bpm = 120;
-        let currentBeat = 0;
-
-        function setBPM(val) {
-            bpm = val;
-            document.getElementById('bpm-display').innerText = bpm;
-            document.getElementById('bpm-slider').value = bpm;
-            if (isPlayingMetronome) {
-                toggleMetronome();
-                toggleMetronome();
-            }
-        }
-
-        function adjustBPM(amount) {
-            setBPM(Math.max(40, Math.min(240, parseInt(bpm) + amount)));
-        }
-
-        function toggleMetronome() {
-            initAudio();
-            if (isPlayingMetronome) {
-                clearInterval(metronomeInterval);
-                isPlayingMetronome = false;
-                document.getElementById('metronome-play-btn').innerText = 'Start Click';
-                document.getElementById('metronome-play-btn').classList.remove('bg-red-500', 'hover:bg-red-600');
-                document.getElementById('metronome-play-btn').classList.add('bg-accent', 'hover:bg-emerald-600');
-                return;
-            }
-
-        // --- Metronome Logic Continued ---
-            isPlayingMetronome = true;
-            document.getElementById('metronome-play-btn').innerText = 'Stop Click';
-            document.getElementById('metronome-play-btn').classList.remove('bg-accent', 'hover:bg-emerald-600');
-            document.getElementById('metronome-play-btn').classList.add('bg-red-500', 'hover:bg-red-600');
-
-            let intervalMs = (60 / bpm) * 1000;
-            metronomeInterval = setInterval(() => {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.frequency.value = currentBeat === 0 ? 1000 : 800;
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
-                osc.stop(audioCtx.currentTime + 0.05);
-
-                let dots = document.querySelectorAll('.beat-dot');
-                dots.forEach((dot, idx) => {
-                    if (idx === currentBeat) {
-                        dot.classList.add('bg-accent', 'glow-green');
-                    } else {
-                        dot.classList.remove('bg-accent', 'glow-green');
-                    }
-                });
-
-                currentBeat = (currentBeat + 1) % 4;
-            }, intervalMs);
-        }
-
-        let lastTap = 0;
-        function tapTempo() {
-            let now = Date.now();
-            if (lastTap && (now - lastTap < 2000)) {
-                let diff = now - lastTap;
-                let calculatedBPM = Math.round(60000 / diff);
-                if (calculatedBPM >= 40 && calculatedBPM <= 240) {
-                    setBPM(calculatedBPM);
-                }
-            }
-            lastTap = now;
-        }
-
-        // --- Service Worker Registration ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered successfully!', reg))
-                    .catch(err => console.log('Service Worker registration failed:', err));
-            });
-        }
-    </script>
+<body>
+<header>
+  <div class="headerInner">
+    <div class="brand">
+      <span class="brandIcon" aria-hidden="true">🎸</span>
+      <div><h1>GuitarLab Pro</h1><div class="tagline">Your personal guitar practice studio</div></div>
+    </div>
+    <div class="micStatus" id="micStatus">MIC OFF<br>Audio ready when you are</div>
+  </div>
+</header>
+
+<main>
+<nav aria-label="Practice tools">
+  <button class="tab active" data-tab="bend">🎯 Bend Trainer</button>
+  <button class="tab" data-tab="tuner">🎛 Tuner</button>
+  <button class="tab" data-tab="chords">🎼 Chords</button>
+  <button class="tab" data-tab="metro">🥁 Metronome</button>
+  <button class="tab" data-tab="fretboard">🎹 Fretboard</button>
+  <button class="tab" data-tab="session">📈 Progress</button>
+</nav>
+
+<!-- BEND TRAINER -->
+<section id="bend" class="panel active">
+<div class="layout">
+<div class="card full">
+  <h2>Target-note Bend Trainer</h2>
+  <p class="muted small">Hear the destination pitch, play the starting note, and bend upward until the meter reaches the green zone.</p>
+  <div class="grid3">
+    <label>String
+      <select id="bendString">
+        <option value="E4">1st · High E</option><option value="B3">2nd · B</option>
+        <option value="G3" selected>3rd · G</option><option value="D3">4th · D</option>
+        <option value="A2">5th · A</option><option value="E2">6th · Low E</option>
+      </select>
+    </label>
+    <label>Fret
+      <select id="bendFret"></select>
+    </label>
+    <label>Bend interval
+      <select id="bendInterval">
+        <option value="1">½ step</option><option value="2" selected>Whole step</option><option value="3">1½ steps</option>
+      </select>
+    </label>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="noteBox"><div class="eyebrow">Start note</div><div id="bendStartNote" class="bigNote">D4</div><div id="bendStartHz" class="muted small">293.7 Hz</div></div>
+    <div class="noteBox target"><div class="eyebrow green">Target note</div><div id="bendTargetNote" class="bigNote green">E4</div><div id="bendTargetHz" class="muted small">329.6 Hz</div></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" id="hearBendTarget">🔊 Hear target</button>
+    <button class="btn" id="hearBendStart">▶ Hear start</button>
+  </div>
+  <div class="row" style="margin-top:9px">
+    <button class="btn primary" id="bendMic">Enable microphone</button>
+    <button class="btn" id="randomBend">Random challenge</button>
+  </div>
+  <div class="meter">
+    <div class="meterHead"><span class="muted">Pitch accuracy</span><strong id="bendCents">Waiting for mic</strong></div>
+    <div class="scale"><div class="sweetZone"></div><div class="centerLine"></div><div class="needle" id="bendNeedle"></div><div class="scaleLabels"><span>−50¢</span><span>−10¢</span><span>0</span><span>+10¢</span><span>+50¢</span></div></div>
+    <div class="status" id="bendStatus" aria-live="polite">Enable the mic, pluck the start note, and bend.</div>
+  </div>
+  <div class="row" style="justify-content:space-between;font-size:12px;margin-top:12px"><span class="muted">Hold the sweet spot</span><span id="bendHoldText">0.0 / 0.5 s</span></div>
+  <div class="track"><div class="fill" id="bendHoldFill"></div></div>
+  <div class="stats">
+    <div class="stat"><small>Best accuracy</small><strong id="bendBest">—</strong></div>
+    <div class="stat"><small>Time in tune</small><strong id="bendInTune">0.0 s</strong></div>
+    <div class="stat"><small>Attempts</small><strong id="bendAttempts">0</strong></div>
+  </div>
+  <canvas id="bendChart" width="600" height="150" aria-label="Recent bend pitch accuracy"></canvas>
+  <div class="row" style="margin-top:10px"><button class="btn ghost" id="resetBend">Reset bend stats</button></div>
+  <p class="muted small">The green zone is ±10 cents. A beep sounds when you enter the zone and when you hold it for 0.5 seconds. Use a clean, sustained single note for best results.</p>
+</div>
+<div class="card">
+  <h3>How to practise bends</h3>
+  <ol><li>Listen to the target pitch first.</li><li>Pluck the starting note clearly.</li><li>Bend gradually and watch the meter.</li><li>Relax the bend if you go sharp.</li><li>Repeat until the pitch feels natural.</li></ol>
+</div>
+<div class="card">
+  <h3>Quick reminders</h3>
+  <p class="muted small">Use standard tuning. Microphone pitch detection can be affected by room noise, vibrato, distortion, and other instruments. The app estimates pitch; it cannot judge your technique or finger placement.</p>
+</div>
+</div>
+</section>
+
+<!-- TUNER -->
+<section id="tuner" class="panel">
+<div class="layout">
+<div class="card full">
+  <h2>Chromatic Guitar Tuner</h2>
+  <p class="muted small">Tune one string at a time. Play an open string and adjust until the needle sits near zero.</p>
+  <div class="row">
+    <button class="btn primary" id="tunerMic">Enable tuner microphone</button>
+    <button class="btn" id="tunerStop">Stop tuner</button>
+  </div>
+  <div class="noteBox" style="margin-top:14px">
+    <div class="eyebrow">Detected note</div><div id="tunerNote" class="bigNote">—</div>
+    <div id="tunerFrequency" class="muted small">Waiting for sound</div>
+    <div id="tunerAdvice" class="green" style="font-weight:750;margin-top:8px">Play one string</div>
+  </div>
+  <div class="meter">
+    <div class="meterHead"><span class="muted">Tune accuracy</span><strong id="tunerCents">0 cents</strong></div>
+    <div class="scale"><div class="sweetZone" style="left:45%;width:10%"></div><div class="centerLine"></div><div id="tunerNeedle" class="needle"></div><div class="scaleLabels"><span>Flat</span><span>In tune</span><span>Sharp</span></div></div>
+  </div>
+  <div class="grid3" style="margin-top:14px">
+    <div class="noteBox"><div class="muted small">Low E</div><div class="bigNote">E2</div><div class="muted small">82.41 Hz</div></div>
+    <div class="noteBox"><div class="muted small">A</div><div class="bigNote">A2</div><div class="muted small">110.00 Hz</div></div>
+    <div class="noteBox"><div class="muted small">D</div><div class="bigNote">D3</div><div class="muted small">146.83 Hz</div></div>
+    <div class="noteBox"><div class="muted small">G</div><div class="bigNote">G3</div><div class="muted small">196.00 Hz</div></div>
+    <div class="noteBox"><div class="muted small">B</div><div class="bigNote">B3</div><div class="muted small">246.94 Hz</div></div>
+    <div class="noteBox"><div class="muted small">High E</div><div class="bigNote">E4</div><div class="muted small">329.63 Hz</div></div>
+  </div>
+</div>
+<div class="card">
+  <h3>Tuning tips</h3>
+  <ol><li>Reduce background noise.</li><li>Pluck one string and let it ring.</li><li>If the note is flat, tighten the string slowly.</li><li>If the note is sharp, loosen it slowly.</li><li>Recheck after each adjustment.</li></ol>
+  <p class="muted small">Turn tuning pegs gently. If a string feels unusually tight, stop rather than forcing it.</p>
+</div>
+</div>
+</section>
+
+<!-- CHORD LIBRARY -->
+<section id="chords" class="panel">
+<div class="layout">
+<div class="card full">
+  <h2>Chord Library</h2>
+  <p class="muted small">Choose a chord to see its fingering and hear a plucked, strummed version. Sound is synthesized in your browser.</p>
+  <div id="chordList" class="chordList"></div>
+  <div class="chordDetails" style="margin-top:17px">
+    <div><canvas id="chordDiagram" class="diagram" width="220" height="280" aria-label="Selected chord fingering diagram"></canvas></div>
+    <div>
+      <div class="eyebrow">Selected chord</div><div id="chordName" class="bigNote">C Major</div>
+      <div id="chordFormula" class="muted small">C · E · G</div>
+      <p id="chordInstructions" class="muted small">Place your fingers as shown in the diagram.</p>
+      <div class="row"><button class="btn primary" id="strumChord">🎸 Strum chord</button><button class="btn" id="arpeggiateChord">♪ Play notes</button></div>
+      <h3 style="margin-top:15px">Individual strings</h3>
+      <div id="individualStrings" class="stringNotes"></div>
+    </div>
+  </div>
+  <details><summary>How to read chord diagrams</summary><ol><li>Vertical lines represent strings; the leftmost is the low E string.</li><li>Horizontal lines represent frets; the thick top line is the nut when shown at the open position.</li><li>Numbers in circles indicate frets in the fingering.</li><li>“X” means mute the string; “O” means play it open.</li></ol></details>
+</div>
+</div>
+</section>
+
+<!-- METRONOME -->
+<section id="metro" class="panel">
+<div class="layout">
+<div class="card full">
+  <h2>Metronome</h2>
+  <p class="muted small">Choose a sound, set your tempo and time signature, and use the accented first beat to feel the bar.</p>
+  <div class="bpmDisplay"><span id="bpmDisplay">90</span><small> BPM</small></div>
+  <input id="bpmRange" type="range" min="30" max="240" value="90" aria-label="Tempo in beats per minute">
+  <div class="row"><button class="btn" id="bpmDown">− 1 BPM</button><button class="btn" id="bpmUp">+ 1 BPM</button><button class="btn" id="tapTempo">Tap tempo</button></div>
+  <div class="grid3" style="margin-top:15px">
+    <label>Sound
+      <select id="metroSound">
+        <option value="wood">Woodblock</option>
+        <option value="click">Sharp click</option>
+        <option value="beep">Electronic beep</option>
+        <option value="cowbell">Cowbell</option>
+        <option value="rim">Rimshot</option>
+      </select>
+    </label>
+    <label>Beats per bar
+      <select id="beatsPerBar"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>12</option></select>
+    </label>
+    <label>Subdivision
+      <select id="subdivision"><option value="1">Quarter notes</option><option value="2">Eighth notes</option><option value="3">Triplets</option><option value="4">Sixteenth notes</option></select>
+    </label>
+  </div>
+  <label style="margin-top:15px">Volume <span id="volumeValue">70%</span><input id="metroVolume" type="range" min="0" max="100" value="70"></label>
+  <div class="checkList" style="margin-top:10px">
+    <label class="toggleRow"><input type="checkbox" id="accentFirst" checked> Emphasize the first beat of each bar</label>
+    <label class="toggleRow"><input type="checkbox" id="visualFlash" checked> Show visual beat indicator</label>
+  </div>
+  <div id="beatDots" class="beatDots" aria-label="Beat indicator"></div>
+  <div class="row"><button class="btn primary" id="metroStart">▶ Start</button><button class="btn" id="metroStop" disabled>■ Stop</button></div>
+  <div class="status" id="metroStatus">Ready when you are.</div>
+</div>
+<div class="card">
+  <h3>Practice ideas</h3>
+  <ol><li>Start at a tempo where you can play cleanly.</li><li>Accent the first beat to keep track of the bar.</li><li>Try eighth notes or triplets for rhythm practice.</li><li>Increase the tempo gradually, not all at once.</li></ol>
+  <p class="muted small">Audio scheduling uses the Web Audio clock for steadier timing than a simple repeating timer. Bluetooth speakers may introduce audible latency.</p>
+</div>
+</div>
+</section>
+
+<!-- FRETBOARD -->
+<section id="fretboard" class="panel">
+<div class="layout">
+<div class="card full">
+  <h2>Fretboard Note Finder</h2>
+  <p class="muted small">Tap any fret to hear its note. Standard tuning, open strings through fret 12.</p>
+  <div class="row">
+    <label>Show note names
+      <select id="noteDisplay"><option value="note">Note names</option><option value="interval">Intervals from selected root</option></select>
+    </label>
+    <label>Root note
+      <select id="rootNote"></select>
+    </label>
+  </div>
+  <div class="fretWrap" style="margin-top:14px"><div id="fretboardGrid" class="fretboard"></div></div>
+  <div class="noteBox" style="margin-top:14px">
+    <div class="eyebrow">Selected position</div>
+    <div id="selectedFretNote" class="bigNote">E2</div>
+    <div id="selectedFretInfo" class="muted small">6th string · Open string · 82.4 Hz</div>
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="playFretNote">▶ Play note</button><button class="btn" id="clearFret">Clear selection</button></div>
+  </div>
+</div>
+<div class="card">
+  <h3>Standard tuning</h3>
+  <p class="muted small">From the thickest string to the thinnest:</p>
+  <div class="grid3">
+    <div class="noteBox"><div class="muted small">6th</div><strong>E2</strong></div>
+    <div class="noteBox"><div class="muted small">5th</div><strong>A2</strong></div>
+    <div class="noteBox"><div class="muted small">4th</div><strong>D3</strong></div>
+    <div class="noteBox"><div class="muted small">3rd</div><strong>G3</strong></div>
+    <div class="noteBox"><div class="muted small">2nd</div><strong>B3</strong></div>
+    <div class="noteBox"><div class="muted small">1st</div><strong>E4</strong></div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- PROGRESS -->
+<section id="session" class="panel">
+<div class="layout">
+<div class="card full">
+  <h2>Practice Session & Progress</h2>
+  <p class="muted small">Start a session when you begin practising. Your session time and completed bend challenges are tracked in this browser.</p>
+  <div class="row"><button class="btn primary" id="sessionStart">▶ Start session</button><button class="btn" id="sessionStop">Finish session</button></div>
+  <div class="stats">
+    <div class="stat"><small>Current session</small><strong id="sessionTime">0 min</strong></div>
+    <div class="stat"><small>Bend challenges</small><strong id="sessionBends">0</strong></div>
+    <div class="stat"><small>Best bend accuracy</small><strong id="sessionBest">—</strong></div>
+  </div>
+  <h3 style="margin-top:18px">Practice checklist</h3>
+  <div class="checkList">
+    <label class="checkItem"><input type="checkbox" data-practice="Warm-up"> Warm up with relaxed chromatic exercises</label>
+    <label class="checkItem"><input type="checkbox" data-practice="Tuning"> Tune all six strings</label>
+    <label class="checkItem"><input type="checkbox" data-practice="Chords"> Practise chord changes cleanly</label>
+    <label class="checkItem"><input type="checkbox" data-practice="Rhythm"> Play with the metronome</label>
+    <label class="checkItem"><input type="checkbox" data-practice="Bends"> Practise accurate bends</label>
+    <label class="checkItem"><input type="checkbox" data-practice="Review"> Review one difficult passage</label>
+  </div>
+  <h3 style="margin-top:18px">Recent sessions</h3>
+  <div id="sessionHistory" class="muted small">No finished sessions yet.</div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="clearChecklist">Clear checklist</button><button class="btn danger" id="clearHistory">Clear saved progress</button></div>
+</div>
+<div class="card">
+  <h3>Progress tracking</h3>
+  <p class="muted small">Progress is saved locally in this browser when storage is available. It does not sync between devices or browsers. Clearing site data may erase saved history.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+GuitarLab Pro runs locally in your browser. Microphone tools need your permission and normally require HTTPS or localhost. The app does not upload microphone audio. Synthesized plucked-string tones are approximations, not recordings of a real guitar. Always protect your hearing when practising with headphones.
+</footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* Core audio and utilities */
+const $ = id => document.getElementById(id);
+const tuning = {E2:82.4069,A2:110,D3:146.8324,G3:195.9977,B3:246.9417,E4:329.6276};
+const stringsLowToHigh = [
+  {name:'6th · Low E',note:'E2',freq:82.4069},
+  {name:'5th · A',note:'A2',freq:110},
+  {name:'4th · D',note:'D3',freq:146.8324},
+  {name:'3rd · G',note:'G3',freq:195.9977},
+  {name:'2nd · B',note:'B3',freq:246.9417},
+  {name:'1st · High E',note:'E4',freq:329.6276}
+];
+const noteNames=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+let audioCtx=null;
+let toastTimer=0;
+
+function toast(message){
+  const el=$('toast');
+  el.textContent=message;
+  el.style.display='block';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.style.display='none',2600);
+}
+async function ensureAudio(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)throw Error('Web Audio is not supported in this browser.');
+  if(!audioCtx)audioCtx=new AC();
+  if(audioCtx.state==='suspended')await audioCtx.resume();
+  return audioCtx;
+}
+function noteAtFrequency(freq){
+  const midi=Math.round(69+12*Math.log2(freq/440));
+  return {name:noteNames[(midi%12+12)%12]+(Math.floor(midi/12)-1),midi};
+}
+function freqForNote(note){
+  const match=/^([A-G]#?)(-?\d+)$/.exec(note);
+  if(!match)return 440;
+  const semitone=noteNames.indexOf(match[1]);
+  const midi=(Number(match[2])+1)*12+semitone;
+  return 440*Math.pow(2,(midi-69)/12);
+}
+
+/*
+ Plucked-string synthesis:
+ Karplus-Strong-style filtered noise loop. This sounds more like a
+ plucked string than a plain oscillator, though it is still synthetic.
+*/
+function pluck(freq,duration=1.5,velocity=0.8,when=null){
+  if(!audioCtx||!Number.isFinite(freq)||freq<35||freq>5000)return;
+  const ctx=audioCtx;
+  const start=when===null?ctx.currentTime:when;
+  const length=Math.max(2,Math.round(ctx.sampleRate/freq));
+  const total=Math.max(length+1,Math.floor(ctx.sampleRate*duration));
+  const ring=new Float32Array(length);
+  for(let i=0;i<length;i++)ring[i]=(Math.random()*2-1);
+  const data=new Float32Array(total);
+  let prev=0;
+  for(let i=0;i<total;i++){
+    const j=i%length;
+    const next=(j+1)%length;
+    const value=0.5*(ring[j]+ring[next]);
+    ring[j]=value*0.996;
+    prev=value;
+    data[i]=prev;
+  }
+  const buffer=ctx.createBuffer(1,total,ctx.sampleRate);
+  buffer.copyToChannel(data,0);
+  const source=ctx.createBufferSource();
+  const filter=ctx.createBiquadFilter();
+  const gain=ctx.createGain();
+  source.buffer=buffer;
+  filter.type='lowpass';
+  filter.frequency.setValueAtTime(Math.min(9000,Math.max(700,freq*12)),start);
+  filter.Q.value=0.6;
+  gain.gain.setValueAtTime(0.0001,start);
+  gain.gain.linearRampToValueAtTime(Math.max(0.001,velocity*0.24),start+0.008);
+  gain.gain.setTargetAtTime(0.0001,start+0.12,Math.max(0.15,duration/3));
+  source.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  source.start(start);
+  source.stop(start+duration+0.1);
+}
+async function playPluck(freq,duration=1.5,velocity=0.8){
+  await ensureAudio();
+  pluck(freq,duration,velocity);
+}
+
+/* Navigation */
+document.querySelectorAll('.tab').forEach(button=>{
+  button.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===button));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===button.dataset.tab));
+  });
+});
+
+/* Bend trainer */
+for(let i=1;i<=24;i++){
+  const op=document.createElement('option');
+  op.value=String(i);op.textContent='Fret '+i;
+  if(i===7)op.selected=true;
+  $('bendFret').appendChild(op);
+}
+let bendMicStream=null,bendAnalyser=null,bendSource=null,bendRunning=false,bendRAF=0;
+let bendHistory=[],bendBest=Infinity,bendAttempts=0,bendTuneTime=0,bendHoldStart=null,bendLastFrame=0,bendLastBeep=0,bendCompleted=false,bendWasInTune=false,bendChallengeCount=0;
+function bendTarget(){
+  const base=tuning[$('bendString').value];
+  const fret=Number($('bendFret').value);
+  const interval=Number($('bendInterval').value);
+  return {start:base*Math.pow(2,fret/12),target:base*Math.pow(2,(fret+interval)/12)};
+}
+function updateBendTarget(){
+  const t=bendTarget();
+  $('bendStartNote').textContent=noteAtFrequency(t.start).name;
+  $('bendTargetNote').textContent=noteAtFrequency(t.target).name;
+  $('bendStartHz').textContent=t.start.toFixed(2)+' Hz';
+  $('bendTargetHz').textContent=t.target.toFixed(2)+' Hz';
+  resetBendStats();
+  $('bendStatus').textContent='Listen to the target, then play and bend the starting note.';
+}
+function resetBendStats(){
+  bendHistory=[];bendBest=Infinity;bendAttempts=0;bendTuneTime=0;bendHoldStart=null;bendCompleted=false;bendWasInTune=false;
+  $('bendBest').textContent='—';$('bendAttempts').textContent='0';$('bendInTune').textContent='0.0 s';
+  $('bendHoldFill').style.width='0%';$('bendHoldText').textContent='0.0 / 0.5 s';
+  $('bendCents').textContent=bendRunning?'Listening':'Waiting for mic';
+  $('bendNeedle').style.left='50%';drawBendChart();
+}
+function drawBendChart(){
+  const canvas=$('bendChart'),ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#080e1b';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#26354f';ctx.lineWidth=1;
+  for(let c=-50;c<=50;c+=10){const y=h/2-c/100*h;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  ctx.fillStyle='#34d39922';ctx.fillRect(0,h*.4,w,h*.2);
+  if(bendHistory.length<2)return;
+  ctx.strokeStyle='#34d399';ctx.lineWidth=2;ctx.beginPath();
+  bendHistory.forEach((c,i)=>{
+    const x=i/(bendHistory.length-1)*w;
+    const y=h/2-Math.max(-50,Math.min(50,c))/100*h;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+function bendBeep(kind){
+  const now=performance.now();if(now-bendLastBeep<450)return;bendLastBeep=now;
+  const freq=kind==='complete'?1320:880;
+  ensureAudio().then(()=>pluck(freq,.12,.35)).catch(()=>{});
+}
+async function startBendMic(){
+  if(bendRunning){stopBendMic();return;}
+  try{
+    await ensureAudio();
+    bendMicStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    bendSource=audioCtx.createMediaStreamSource(bendMicStream);
+    bendAnalyser=audioCtx.createAnalyser();bendAnalyser.fftSize=8192;bendAnalyser.smoothingTimeConstant=0;
+    bendSource.connect(bendAnalyser);bendRunning=true;bendLastFrame=performance.now();
+    $('bendMic').textContent='Stop microphone';$('micStatus').innerHTML='MIC ON<br>Listening for bends';
+    bendDetectLoop();
+  }catch(e){stopBendMic();$('bendStatus').textContent='Microphone access failed. Allow permission and use HTTPS or localhost.';toast('Could not access the microphone.');}
+}
+function stopBendMic(){
+  bendRunning=false;if(bendRAF)cancelAnimationFrame(bendRAF);bendRAF=0;
+  if(bendMicStream)bendMicStream.getTracks().forEach(t=>t.stop());
+  bendMicStream=null;bendAnalyser=null;bendSource=null;
+  $('bendMic').textContent='Enable microphone';$('micStatus').innerHTML='MIC OFF<br>Audio ready when you are';
+  $('bendCents').textContent='Mic off';$('bendNeedle').style.left='50%';
+}
+
+/* Autocorrelation pitch detection. */
+function detectPitch(buffer,sampleRate,minHz=60,maxHz=1200){
+  let rms=0,mean=0;
+  for(let i=0;i<buffer.length;i++){rms+=buffer[i]*buffer[i];mean+=buffer[i];}
+  rms=Math.sqrt(rms/buffer.length);if(rms<0.012)return null;
+  mean/=buffer.length;
+  const x=new Float32Array(buffer.length);
+  for(let i=0;i<buffer.length;i++)x[i]=buffer[i]-mean;
+  const minLag=Math.max(2,Math.floor(sampleRate/maxHz));
+  const maxLag=Math.min(Math.floor(sampleRate/minHz),Math.floor(x.length/2));
+  let bestLag=-1,best=-Infinity;
+  for(let lag=minLag;lag<=maxLag;lag++){
+    let sum=0,n=0;
+    for(let i=0;i<x.length-lag;i+=2){sum+=x[i]*x[i+lag];n++;}
+    const score=sum/(n||1);
+    if(score>best){best=score;bestLag=lag;}
+  }
+  if(bestLag<0||best<=0)return null;
+  const corr=lag=>{
+    let sum=0,n=0;
+    for(let i=0;i<x.length-lag;i+=2){sum+=x[i]*x[i+lag];n++;}
+    return sum/(n||1);
+  };
+  const left=bestLag>minLag?corr(bestLag-1):best;
+  const right=bestLag<maxLag?corr(bestLag+1):best;
+  const denominator=2*(2*best-left-right);
+  const shift=denominator?Math.max(-1,Math.min(1,(right-left)/denominator)):0;
+  return sampleRate/(bestLag+shift);
+}
+function bendDetectLoop(){
+  if(!bendRunning||!bendAnalyser)return;
+  const now=performance.now(),dt=Math.min((now-bendLastFrame)/1000,.1);bendLastFrame=now;
+  const buf=new Float32Array(bendAnalyser.fftSize);bendAnalyser.getFloatTimeDomainData(buf);
+  const freq=detectPitch(buf,audioCtx.sampleRate,60,1200);
+  if(freq)processBendPitch(freq,dt);
+  else{
+    $('bendCents').textContent='No clear pitch';$('bendNeedle').style.background='#94a3b8';
+    $('bendStatus').textContent='Play one clear, sustained note.';
+    bendHoldStart=null;bendWasInTune=false;bendCompleted=false;
+    $('bendHoldFill').style.width='0%';$('bendHoldText').textContent='0.0 / 0.5 s';
+  }
+  bendRAF=requestAnimationFrame(bendDetectLoop);
+}
+function processBendPitch(freq,dt){
+  const cents=1200*Math.log2(freq/bendTarget().target),abs=Math.abs(cents),inside=abs<=10;
+  bendHistory.push(cents);if(bendHistory.length>100)bendHistory.shift();
+  $('bendCents').textContent=(cents>0?'+':'')+cents.toFixed(1)+' cents';
+  $('bendNeedle').style.left=(50+Math.max(-50,Math.min(50,cents)))+'%';
+  $('bendNeedle').style.background=inside?'#34d399':'#fbbf24';
+  if(inside){
+    if(!bendWasInTune){bendAttempts++;$('bendAttempts').textContent=String(bendAttempts);bendBeep('enter');}
+    if(!bendCompleted){
+      if(bendHoldStart===null)bendHoldStart=performance.now();
+      const held=(performance.now()-bendHoldStart)/1000;
+      $('bendHoldFill').style.width=Math.min(100,held/.5*100)+'%';
+      $('bendHoldText').textContent=Math.min(.5,held).toFixed(1)+' / 0.5 s';
+      bendTuneTime+=dt;
+      if(held>=.5){
+        bendCompleted=true;bendChallengeCount++;
+        $('bendStatus').textContent='🎯 Great! Target pitch held.';
+        $('bendStatus').className='status green';bendBeep('complete');
+        updateSessionBends();
+      }else{$('bendStatus').textContent='In tune! Hold it steady…';$('bendStatus').className='status green';}
+    }else bendTuneTime+=dt;
+    bendBest=Math.min(bendBest,abs);
+  }else{
+    bendHoldStart=null;bendCompleted=false;
+    $('bendHoldFill').style.width='0%';$('bendHoldText').textContent='0.0 / 0.5 s';
+    $('bendStatus').className='status';
+    $('bendStatus').textContent=cents<0?'Too low — bend up a little more.':'Too high — release the bend slightly.';
+  }
+  bendWasInTune=inside;
+  $('bendBest').textContent=Number.isFinite(bendBest)?bendBest.toFixed(1)+'¢':'—';
+  $('bendInTune').textContent=bendTuneTime.toFixed(1)+' s';
+  $('sessionBest').textContent=Number.isFinite(bendBest)?bendBest.toFixed(1)+'¢':'—';
+  drawBendChart();
+}
+$('bendMic').addEventListener('click',startBendMic);
+$('hearBendTarget').addEventListener('click',()=>playPluck(bendTarget().target).catch(e=>toast(e.message)));
+$('hearBendStart').addEventListener('click',()=>playPluck(bendTarget().start).catch(e=>toast(e.message)));
+['bendString','bendFret','bendInterval'].forEach(id=>$(id).addEventListener('change',updateBendTarget));
+$('randomBend').addEventListener('click',()=>{
+  const strings=Object.keys(tuning);
+  $('bendString').value=strings[Math.floor(Math.random()*strings.length)];
+  $('bendFret').value=String(3+Math.floor(Math.random()*14));
+  $('bendInterval').value=String(1+Math.floor(Math.random()*3));
+  updateBendTarget();
+});
+$('resetBend').addEventListener('click',resetBendStats);
+
+/* Chord library: frets ordered low E to high E; -1=mute, 0=open. */
+const chords=[
+{name:'C Major',short:'C',formula:'C · E · G',frets:[-1,3,2,0,1,0],fingers:[0,3,2,0,1,0]},
+{name:'G Major',short:'G',formula:'G · B · D',frets:[3,2,0,0,0,3],fingers:[2,1,0,0,0,3]},
+{name:'D Major',short:'D',formula:'D · F# · A',frets:[-1,-1,0,2,3,2],fingers:[0,0,0,1,3,2]},
+{name:'A Major',short:'A',formula:'A · C# · E',frets:[-1,0,2,2,2,0],fingers:[0,0,1,2,3,0]},
+{name:'E Major',short:'E',formula:'E · G# · B',frets:[0,2,2,1,0,0],fingers:[0,2,3,1,0,0]},
+{name:'A Minor',short:'Am',formula:'A · C · E',frets:[-1,0,2,2,1,0],fingers:[0,0,2,3,1,0]},
+{name:'E Minor',short:'Em',formula:'E · G · B',frets:[0,2,2,0,0,0],fingers:[0,2,3,0,0,0]},
+{name:'D Minor',short:'Dm',formula:'D · F · A',frets:[-1,-1,0,2,3,1],fingers:[0,0,0,2,3,1]},
+{name:'A7',short:'A7',formula:'A · C# · E · G',frets:[-1,0,2,0,2,0],fingers:[0,0,2,0,3,0]},
+{name:'D7',short:'D7',formula:'D · F# · A · C',frets:[-1,-1,0,2,1,2],fingers:[0,0,0,2,1,3]},
+{name:'E7',short:'E7',formula:'E · G# · B · D',frets:[0,2,0,1,0,0],fingers:[0,2,0,1,0,0]},
+{name:'Cmaj7',short:'Cmaj7',formula:'C · E · G · B',frets:[-1,3,2,0,0,0],fingers:[0,3,2,0,0,0]},
+{name:'Am7',short:'Am7',formula:'A · C · E · G',frets:[-1,0,2,0,1,0],fingers:[0,0,2,0,1,0]},
+{name:'Dsus2',short:'Dsus2',formula:'D · E · A',frets:[-1,-1,0,2,3,0],fingers:[0,0,0,1,3,0]},
+{name:'Em7',short:'Em7',formula:'E · G · B · D',frets:[0,2,0,0,0,0],fingers:[0,2,0,0,0,0]},
+{name:'F Major',short:'F',formula:'F · A · C',frets:[1,3,3,2,1,1],fingers:[1,3,4,2,1,1]},
+{name:'Bm',short:'Bm',formula:'B · D · F#',frets:[-1,2,4,4,3,2],fingers:[0,1,3,4,2,1]},
+{name:'F#m',short:'F#m',formula:'F# · A · C#',frets:[2,4,4,2,2,2],fingers:[1,3,4,1,1,1]}
+];
+let selectedChord=chords[0];
+function chordNoteFreq(stringIndex,fret){
+  if(fret<0)return null;
+  return stringsLowToHigh[stringIndex].freq*Math.pow(2,fret/12);
+}
+function renderChordButtons(){
+  const box=$('chordList');box.replaceChildren();
+  chords.forEach(ch=>{
+    const b=document.createElement('button');
+    b.className='chordPick'+(ch===selectedChord?' active':'');
+    b.textContent=ch.short;b.title=ch.name;
+    b.addEventListener('click',()=>{selectedChord=ch;renderChordButtons();renderChord();});
+    box.appendChild(b);
+  });
+}
+function renderChord(){
+  const ch=selectedChord;
+  $('chordName').textContent=ch.name;$('chordFormula').textContent=ch.formula;
+  $('chordInstructions').textContent='Mute X strings, play O strings open, and place your fingers at the numbered frets.';
+  drawChordDiagram(ch);
+  const box=$('individualStrings');box.replaceChildren();
+  ch.frets.forEach((f,i)=>{
+    const b=document.createElement('button');b.className='stringNote';
+    const note=f<0?'Muted':noteAtFrequency(chordNoteFreq(i,f)).name;
+    b.innerHTML='<strong>'+stringsLowToHigh[i].note+'</strong><br>'+note+'<br><span class="muted">'+(f<0?'X':f===0?'Open':'Fret '+f)+'</span>';
+    b.addEventListener('click',()=>{
+      if(f<0){toast('This string is muted in this chord.');return;}
+      playPluck(chordNoteFreq(i,f)).catch(e=>toast(e.message));
+    });
+    box.appendChild(b);
+  });
+}
+function drawChordDiagram(ch){
+  const canvas=$('chordDiagram'),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle='#080e1b';ctx.fillRect(0,0,w,h);
+  ctx.font='bold 14px system-ui';ctx.fillStyle='#e5edf8';ctx.textAlign='center';ctx.fillText(ch.name,w/2,20);
+  const left=34,right=w-18,top=55,bottom=h-30;
+  const maxF=Math.max(4,...ch.frets.filter(f=>f>0));
+  const minF=maxF>4?Math.min(...ch.frets.filter(f=>f>0)):1;
+  const startF=minF>1?minF:1;
+  const shownF=Math.max(4,Math.min(5,maxF-startF+1));
+  const gapX=(right-left)/5,gapY=(bottom-top)/shownF;
+  ctx.strokeStyle='#52627a';ctx.lineWidth=1.5;
+  for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(left+i*gapX,top);ctx.lineTo(left+i*gapX,bottom);ctx.stroke();}
+  for(let f=0;f<=shownF;f++){ctx.beginPath();ctx.moveTo(left,top+f*gapY);ctx.lineTo(right,top+f*gapY);ctx.lineWidth=f===0&&startF===1?4:1.5;ctx.stroke();}
+  if(startF>1){ctx.fillStyle='#94a3b8';ctx.font='11px system-ui';ctx.textAlign='left';ctx.fillText(startF+'fr',5,top+gapY*.65);}
+  ch.frets.forEach((f,i)=>{
+    const x=left+i*gapX;
+    ctx.textAlign='center';ctx.font='bold 14px system-ui';
+    if(f<0){ctx.fillStyle='#fb7185';ctx.fillText('X',x,top-12);}
+    else if(f===0){ctx.fillStyle='#34d399';ctx.fillText('O',x,top-12);}
+    else{
+      const y=top+(f-startF+.5)*gapY;
+      ctx.beginPath();ctx.arc(x,y,9,0,Math.PI*2);ctx.fillStyle='#34d399';ctx.fill();
+      ctx.fillStyle='#052e2b';ctx.font='bold 10px system-ui';ctx.fillText(ch.fingers[i]||'•',x,y+3.5);
+    }
+  });
+  ctx.fillStyle='#94a3b8';ctx.font='10px system-ui';
+  stringsLowToHigh.forEach((s,i)=>{ctx.textAlign='center';ctx.fillText(s.note.replace(/\d/,''),left+i*gapX,h-9);});
+}
+$('strumChord').addEventListener('click',async()=>{
+  try{
+    await ensureAudio();const ctx=audioCtx;const start=ctx.currentTime+.03;
+    selectedChord.frets.forEach((f,i)=>{if(f>=0)pluck(chordNoteFreq(i,f),2.0,.72,start+i*.035);});
+  }catch(e){toast(e.message);}
+});
+$('arpeggiateChord').addEventListener('click',async()=>{
+  try{
+    await ensureAudio();const ctx=audioCtx;let time=ctx.currentTime+.03;
+    selectedChord.frets.forEach((f,i)=>{if(f>=0){pluck(chordNoteFreq(i,f),1.4,.72,time);time+=.22;}});
+  }catch(e){toast(e.message);}
+});
+
+/* Tuner */
+let tunerStream=null,tunerAnalyser=null,tunerSource=null,tunerRunning=false,tunerRAF=0;
+async function startTuner(){
+  if(tunerRunning)return;
+  try{
+    await ensureAudio();
+    tunerStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    tunerSource=audioCtx.createMediaStreamSource(tunerStream);
+    tunerAnalyser=audioCtx.createAnalyser();tunerAnalyser.fftSize=8192;tunerAnalyser.smoothingTimeConstant=0;
+    tunerSource.connect(tunerAnalyser);tunerRunning=true;
+    $('micStatus').innerHTML='MIC ON<br>Tuner listening';
+    tunerLoop();
+  }catch(e){stopTuner();toast('Tuner microphone unavailable. Check permission and HTTPS.');}
+}
+function stopTuner(){
+  tunerRunning=false;if(tunerRAF)cancelAnimationFrame(tunerRAF);tunerRAF=0;
+  if(tunerStream)tunerStream.getTracks().forEach(t=>t.stop());
+  tunerStream=null;tunerAnalyser=null;tunerSource=null;
+  $('tunerNote').textContent='—';$('tunerFrequency').textContent='Waiting for sound';
+  $('tunerAdvice').textContent='Play one string';$('tunerCents').textContent='0 cents';
+  $('tunerNeedle').style.left='50%';
+  if(!bendRunning)$('micStatus').innerHTML='MIC OFF<br>Audio ready when you are';
+}
+function tunerLoop(){
+  if(!tunerRunning||!tunerAnalyser)return;
+  const buf=new Float32Array(tunerAnalyser.fftSize);tunerAnalyser.getFloatTimeDomainData(buf);
+  const freq=detectPitch(buf,audioCtx.sampleRate,60,1000);
+  if(freq){
+    const note=noteAtFrequency(freq),target=freqForNote(note.name),cents=1200*Math.log2(freq/target);
+    $('tunerNote').textContent=note.name;$('tunerFrequency').textContent=freq.toFixed(2)+' Hz';
+    $('tunerCents').textContent=(cents>0?'+':'')+cents.toFixed(1)+' cents';
+    $('tunerNeedle').style.left=(50+Math.max(-50,Math.min(50,cents)))+'%';
+    if(Math.abs(cents)<=5){$('tunerAdvice').textContent='✓ In tune';$('tunerAdvice').style.color='#34d399';}
+    else if(cents<0){$('tunerAdvice').textContent='Flat — tighten slightly';$('tunerAdvice').style.color='#fbbf24';}
+    else{$('tunerAdvice').textContent='Sharp — loosen slightly';$('tunerAdvice').style.color='#fbbf24';}
+  }
+  tunerRAF=requestAnimationFrame(tunerLoop);
+}
+$('tunerMic').addEventListener('click',startTuner);
+$('tunerStop').addEventListener('click',stopTuner);
+
+/* Metronome: audio-clock scheduler with selectable timbres and accents. */
+let metroRunning=false,metroTimer=null,nextBeatTime=0,beatNumber=0,subdivisionIndex=0,metroTapTimes=[];
+function metroBpm(){return Number($('bpmRange').value);}
+function updateBpm(){ $('bpmDisplay').textContent=String(metroBpm()); }
+function renderBeatDots(){
+  const box=$('beatDots');box.replaceChildren();
+  const n=Number($('beatsPerBar').value);
+  for(let i=0;i<n;i++){
+    const d=document.createElement('span');d.className='beatDot'+(i===0?' first':'');d.id='beatDot'+i;
+    box.appendChild(d);
+  }
+}
+function metroSoundAt(time,isFirst,isSub){
+  if(!audioCtx)return;
+  const sound=$('metroSound').value;
+  const accent=isFirst&&$('accentFirst').checked;
+  const volume=Number($('metroVolume').value)/100*(accent?.34:.23)*(isSub?.65:1);
+  if(volume<=0)return;
+  const ctx=audioCtx;
+  function tone(freq,dur,type='sine',vol=volume){
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.type=type;osc.frequency.setValueAtTime(freq,time);
+    gain.gain.setValueAtTime(.0001,time);
+    gain.gain.exponentialRampToValueAtTime(Math.max(.0002,vol),time+.003);
+    gain.gain.exponentialRampToValueAtTime(.0001,time+dur);
+    osc.connect(gain);gain.connect(ctx.destination);osc.start(time);osc.stop(time+dur+.01);
+  }
+  if(sound==='wood'){
+    tone(accent?1500:1050,isSub?.025:.045,'triangle',volume);
+    tone(accent?650:500,.035,'sine',volume*.4);
+  }else if(sound==='click'){
+    tone(accent?2400:1700,.025,'square',volume*.55);
+  }else if(sound==='beep'){
+    tone(accent?1320:880,isSub?.04:.065,'sine',volume);
+  }else if(sound==='cowbell'){
+    tone(accent?900:680,.12,'square',volume*.35);
+    tone(accent?1350:1020,.09,'square',volume*.22);
+  }else if(sound==='rim'){
+    tone(accent?1800:1300,.018,'triangle',volume*.75);
+    tone(accent?500:380,.045,'triangle',volume*.45);
+  }
+}
+function scheduleMetro(){
+  if(!metroRunning||!audioCtx)return;
+  const lookAhead=.12;
+  const beats=Number($('beatsPerBar').value);
+  const subdivisions=Number($('subdivision').value);
+  const interval=60/metroBpm()/subdivisions;
+  while(nextBeatTime<audioCtx.currentTime+lookAhead){
+    const isMain=subdivisionIndex===0;
+    const isFirst=isMain&&beatNumber===0;
+    metroSoundAt(nextBeatTime,isFirst,!isMain);
+    if(isMain){
+      const scheduledBeat=beatNumber;
+      const delay=Math.max(0,(nextBeatTime-audioCtx.currentTime)*1000);
+      if($('visualFlash').checked){
+        setTimeout(()=>{
+          if(!metroRunning)return;
+          document.querySelectorAll('.beatDot').forEach((d,i)=>d.classList.toggle('active',i===scheduledBeat));
+        },delay);
+      }
+      beatNumber=(beatNumber+1)%beats;
+    }
+    subdivisionIndex=(subdivisionIndex+1)%subdivisions;
+    nextBeatTime+=interval;
+  }
+  metroTimer=setTimeout(scheduleMetro,25);
+}
+async function startMetro(){
+  if(metroRunning)return;
+  try{
+    await ensureAudio();metroRunning=true;beatNumber=0;subdivisionIndex=0;
+    nextBeatTime=audioCtx.currentTime+.05;
+    $('metroStart').disabled=true;$('metroStop').disabled=false;
+    $('metroStatus').textContent='Metronome running · '+metroBpm()+' BPM';
+    scheduleMetro();
+  }catch(e){toast(e.message);}
+}
+function stopMetro(){
+  metroRunning=false;if(metroTimer)clearTimeout(metroTimer);metroTimer=null;
+  $('metroStart').disabled=false;$('metroStop').disabled=true;
+  document.querySelectorAll('.beatDot').forEach(d=>d.classList.remove('active'));
+  $('metroStatus').textContent='Stopped.';
+}
+$('metroStart').addEventListener('click',startMetro);
+$('metroStop').addEventListener('click',stopMetro);
+$('bpmRange').addEventListener('input',()=>{
+  updateBpm();if(metroRunning)$('metroStatus').textContent='Metronome running · '+metroBpm()+' BPM';
+});
+$('bpmDown').addEventListener('click',()=>{$('bpmRange').value=String(Math.max(30,metroBpm()-1));updateBpm();});
+$('bpmUp').addEventListener('click',()=>{$('bpmRange').value=String(Math.min(240,metroBpm()+1));updateBpm();});
+$('beatsPerBar').addEventListener('change',()=>{renderBeatDots();beatNumber=0;});
+$('subdivision').addEventListener('change',()=>{subdivisionIndex=0;});
+$('metroVolume').addEventListener('input',()=>$('volumeValue').textContent=$('metroVolume').value+'%');
+$('tapTempo').addEventListener('click',()=>{
+  const now=performance.now();metroTapTimes.push(now);
+  metroTapTimes=metroTapTimes.filter(t=>now-t<4000);
+  if(metroTapTimes.length>=2){
+    const intervals=[];
+    for(let i=1;i<metroTapTimes.length;i++)intervals.push(metroTapTimes[i]-metroTapTimes[i-1]);
+    const avg=intervals.reduce((a,b)=>a+b,0)/intervals.length;
+    $('bpmRange').value=String(Math.round(Math.max(30,Math.min(240,60000/avg))));
+    updateBpm();if(metroRunning)stopMetro();
+    $('metroStatus').textContent='Tempo set from taps.';
+  }else $('metroStatus').textContent='Tap again to set tempo.';
+});
+
+/* Fretboard note finder */
+for(let i=0;i<12;i++){
+  const op=document.createElement('option');op.value=noteNames[i];op.textContent=noteNames[i];
+  if(noteNames[i]==='C')op.selected=true;$('rootNote').appendChild(op);
+}
+let selectedFret=null;
+function noteForStringFret(stringIndex,fret){
+  const freq=stringsLowToHigh[stringIndex].freq*Math.pow(2,fret/12);
+  return {freq,...noteAtFrequency(freq)};
+}
+function renderFretboard(){
+  const grid=$('fretboardGrid');grid.replaceChildren();
+  const corner=document.createElement('div');corner.className='fretLabel';corner.textContent='String';grid.appendChild(corner);
+  for(let fret=0;fret<=12;fret++){const lab=document.createElement('div');lab.className='fretLabel';lab.textContent=fret===0?'Open':String(fret);grid.appendChild(lab);}
+  stringsLowToHigh.forEach((s,si)=>{
+    const lab=document.createElement('div');lab.className='fretLabel';lab.textContent=s.note;grid.appendChild(lab);
+    for(let fret=0;fret<=12;fret++){
+      const info=noteForStringFret(si,fret),b=document.createElement('button');
+      const rootMidi=noteNames.indexOf($('rootNote').value);
+      const pc=((info.midi%12)+12)%12;
+      const isRoot=pc===rootMidi;
+      b.className='fretCell'+(fret===0?' open':'')+(isRoot?' root':'');
+      if(selectedFret&&selectedFret.si===si&&selectedFret.fret===fret)b.classList.add('selected');
+      b.innerHTML=$('noteDisplay').value==='note'?info.name:'<span class="dot">'+(((pc-rootMidi+12)%12))+' semitones</span>'+noteNames[pc];
+      b.setAttribute('aria-label',s.name+', fret '+fret+', '+info.name);
+      b.addEventListener('click',()=>{
+        selectedFret={si,fret};
+        $('selectedFretNote').textContent=info.name;
+        $('selectedFretInfo').textContent=s.name+' · '+(fret===0?'Open string':'Fret '+fret)+' · '+info.freq.toFixed(2)+' Hz';
+        renderFretboard();
+        playPluck(info.freq).catch(e=>toast(e.message));
+      });
+      grid.appendChild(b);
+    }
+  });
+}
+$('noteDisplay').addEventListener('change',renderFretboard);
+$('rootNote').addEventListener('change',renderFretboard);
+$('playFretNote').addEventListener('click',()=>{
+  if(!selectedFret){toast('Choose a fret first.');return;}
+  const info=noteForStringFret(selectedFret.si,selectedFret.fret);
+  playPluck(info.freq).catch(e=>toast(e.message));
+});
+$('clearFret').addEventListener('click',()=>{
+  selectedFret=null;$('selectedFretNote').textContent='—';$('selectedFretInfo').textContent='Choose a position on the fretboard.';
+  renderFretboard();
+});
+
+/* Session tracking. Local storage failures are handled gracefully. */
+const STORAGE_KEY='guitarlab_pro_v1';
+let sessionStartedAt=null,sessionElapsed=0,sessionTicker=null,sessionBends=0,sessionHistory=[];
+function loadSaved(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const d=JSON.parse(raw);
+      if(Array.isArray(d.history))sessionHistory=d.history.slice(0,20);
+      if(Number.isFinite(d.bends))sessionBends=d.bends;
+    }
+  }catch(e){}
+  renderSessionHistory();updateSessionBends();updateSessionTime();
+}
+function saveProgress(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({history:sessionHistory.slice(0,20),bends:sessionBends}));}
+  catch(e){/* Storage may be disabled or full. */}
+}
+function updateSessionBends(){$('sessionBends').textContent=String(sessionBends);}
+function updateSessionTime(){
+  const seconds=sessionElapsed+(sessionStartedAt===null?0:Math.max(0,(Date.now()-sessionStartedAt)/1000));
+  const mins=Math.floor(seconds/60),secs=Math.floor(seconds%60);
+  $('sessionTime').textContent=mins+'m '+String(secs).padStart(2,'0')+'s';
+}
+function startSession(){
+  if(sessionStartedAt!==null)return;
+  sessionStartedAt=Date.now();
+  $('sessionStart').disabled=true;
+  sessionTicker=setInterval(updateSessionTime,1000);
+  updateSessionTime();toast('Practice session started.');
+}
+function finishSession(){
+  if(sessionStartedAt===null){toast('Start a session first.');return;}
+  sessionElapsed+=Math.max(0,(Date.now()-sessionStartedAt)/1000);
+  sessionStartedAt=null;
+  if(sessionTicker)clearInterval(sessionTicker);sessionTicker=null;
+  sessionHistory.unshift({
+    date:new Date().toLocaleString(),
+    seconds:Math.round(sessionElapsed),
+    bends:sessionBends,
+    checklist:[...document.querySelectorAll('[data-practice]:checked')].map(x=>x.dataset.practice)
+  });
+  sessionHistory=sessionHistory.slice(0,20);
+  saveProgress();renderSessionHistory();$('sessionStart').disabled=false;
+  updateSessionTime();toast('Session saved in this browser.');
+}
+function renderSessionHistory(){
+  const box=$('sessionHistory');box.replaceChildren();
+  if(!sessionHistory.length){box.textContent='No finished sessions yet.';return;}
+  sessionHistory.forEach(item=>{
+    const div=document.createElement('div');
+    div.style.cssText='padding:10px 0;border-bottom:1px solid #2d3c56;line-height:1.6';
+    const mins=Math.floor((item.seconds||0)/60),secs=(item.seconds||0)%60;
+    const title=document.createElement('strong');title.textContent=item.date||'Practice session';
+    const detail=document.createElement('div');detail.className='muted';
+    detail.textContent=mins+'m '+secs+'s · '+(item.bends||0)+' bend challenges · '+((item.checklist||[]).length)+' checklist items';
+    div.append(title,detail);box.appendChild(div);
+  });
+}
+function clearChecklist(){document.querySelectorAll('[data-practice]').forEach(c=>c.checked=false);}
+$('sessionStart').addEventListener('click',startSession);
+$('sessionStop').addEventListener('click',finishSession);
+$('clearChecklist').addEventListener('click',clearChecklist);
+$('clearHistory').addEventListener('click',()=>{
+  if(!confirm('Clear saved session history and bend challenge count from this browser?'))return;
+  sessionHistory=[];sessionBends=0;saveProgress();renderSessionHistory();updateSessionBends();toast('Saved progress cleared.');
+});
+document.querySelectorAll('[data-practice]').forEach(c=>c.addEventListener('change',saveProgress));
+
+/* Initialise UI */
+updateBendTarget();
+renderChordButtons();
+renderChord();
+renderBeatDots();
+updateBpm();
+renderFretboard();
+loadSaved();
+drawBendChart();
+
+/* Clean up audio and timers when the page is left. */
+window.addEventListener('pagehide',()=>{
+  stopMetro();
+  if(bendRunning)stopBendMic();
+  if(tunerRunning)stopTuner();
+  if(sessionTicker)clearInterval(sessionTicker);
+});
+</script>
 </body>
 </html>
